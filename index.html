@@ -1,0 +1,2188 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>家庭理財小幫手</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --pink:#C9938A; --soft-pink:#E8C4BC; --light-pink:#F5E6E3;
+  --blue:#7A9BAD; --soft-blue:#B8CFDA; --light-blue:#E3EDF3;
+  --sage:#9AAE9B; --light-sage:#E8F0E8;
+  --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
+  --radius:16px; --radius-sm:10px;
+  --shadow:0 2px 10px rgba(55,53,47,0.07);
+  --shadow-md:0 6px 20px rgba(55,53,47,0.10);
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+html{ background:var(--bg); min-height:100%; }
+body{
+  background:var(--bg);
+  color:var(--dark);
+  font-family:'Noto Sans TC', sans-serif;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:76px;
+  min-height:100vh;
+}
+@media (min-width:900px){ body{ padding-bottom:0; } }
+
+button, input, select{ font-family:inherit; }
+a{ color:inherit; }
+:focus-visible{ outline:2px solid var(--blue); outline-offset:2px; }
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:20;
+  background:var(--cream);
+  border-bottom:1px solid var(--soft-pink);
+  padding:14px 20px;
+  display:flex; align-items:center; justify-content:space-between;
+  flex-wrap:wrap; gap:10px;
+}
+.topbar-title{
+  font-weight:900; font-size:19px; letter-spacing:.3px; color:var(--dark);
+  display:flex; align-items:baseline; gap:8px;
+}
+.topbar-title .dot{ width:9px; height:9px; border-radius:50%; background:var(--pink); display:inline-block; }
+.topbar-month{
+  display:flex; align-items:center; gap:6px; font-size:13px; color:var(--medium); flex-wrap:wrap;
+}
+.topbar-month input[type=month]{
+  border:1px solid var(--soft-blue); background:#fff; border-radius:8px;
+  padding:6px 8px; font-size:14px; color:var(--dark);
+}
+.btn-link{
+  background:none; border:none; color:var(--blue); font-weight:700; font-size:13px;
+  cursor:pointer; text-decoration:underline; padding:4px 2px;
+}
+
+/* ---------- Layout / nav ---------- */
+.layout{ display:flex; align-items:flex-start; }
+.sidenav{ display:none; }
+@media (min-width:900px){
+  .sidenav{
+    display:flex; flex-direction:column; gap:4px;
+    width:200px; flex-shrink:0; padding:24px 12px; position:sticky; top:65px;
+  }
+}
+.nav-btn{
+  display:block; width:100%; text-align:left; background:none; border:none;
+  padding:11px 14px; border-radius:10px; font-size:15px; font-weight:500; color:var(--medium);
+  cursor:pointer; transition:background .15s ease, color .15s ease;
+}
+.nav-btn:hover{ background:var(--light-pink); }
+.nav-btn.active{ background:var(--soft-pink); color:var(--dark); font-weight:700; }
+
+main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 auto; width:100%; }
+
+.bottomnav{
+  position:fixed; bottom:0; left:0; right:0; z-index:20;
+  display:flex; background:var(--cream); border-top:1px solid var(--soft-pink);
+  padding:6px 4px calc(6px + env(safe-area-inset-bottom));
+}
+@media (min-width:900px){ .bottomnav{ display:none; } }
+.bottomnav .nav-btn{
+  flex:1; text-align:center; font-size:12px; padding:8px 2px; border-radius:10px;
+}
+
+/* ---------- Pages ---------- */
+.page{ display:none; }
+.page.active{ display:block; animation:fadein .18s ease; }
+@keyframes fadein{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+@media (prefers-reduced-motion: reduce){ .page.active{ animation:none; } }
+
+.page-header{
+  display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
+  margin-bottom:18px;
+}
+.page-header h1{ font-size:20px; margin:0; font-weight:900; }
+.page-sub{ color:var(--gray); font-size:13px; margin-top:2px; }
+
+/* ---------- Buttons ---------- */
+.btn{
+  border:none; border-radius:10px; padding:10px 18px; font-size:14px; font-weight:700;
+  cursor:pointer; transition:opacity .15s ease, transform .1s ease;
+}
+.btn:active{ transform:scale(.97); }
+.btn.primary{ background:var(--pink); color:#fff; }
+.btn.primary:hover{ opacity:.9; }
+.btn.secondary{ background:var(--light-blue); color:var(--dark); }
+.btn.secondary:hover{ opacity:.85; }
+.btn.danger-outline{ background:#fff; color:var(--pink); border:1px solid var(--soft-pink); }
+
+.btn-icon{
+  border:none; background:var(--light-blue); border-radius:8px; width:30px; height:30px;
+  cursor:pointer; font-size:14px; margin-left:4px;
+}
+.btn-icon.danger{ background:var(--light-pink); }
+.month-nav-btn{
+  width:28px; height:28px; font-size:17px; font-weight:900; line-height:1; margin-left:0;
+  background:var(--light-blue); color:var(--dark); flex-shrink:0;
+}
+.month-nav-btn:hover{ background:var(--soft-blue); }
+
+/* ---------- Cards / dashboard ---------- */
+.card-grid{
+  display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr)); gap:14px; margin-bottom:26px;
+}
+.card{
+  background:#fff; border-radius:var(--radius); padding:18px 20px; box-shadow:var(--shadow);
+  border:1px solid rgba(154,174,155,.15);
+}
+.card.alert{ background:var(--light-pink); border-color:var(--soft-pink); }
+.card-label{ font-size:13px; color:var(--medium); font-weight:500; margin-bottom:8px; }
+.stat-value{ font-size:26px; font-weight:900; color:var(--dark); }
+.stat-diff{ font-size:13px; margin-top:6px; font-weight:700; }
+.stat-diff.up{ color:var(--sage); }
+.stat-diff.down{ color:var(--pink); }
+.stat-diff.muted{ color:var(--gray); font-weight:500; }
+
+.section-title{ font-size:15px; font-weight:700; margin:22px 0 10px; color:var(--dark); }
+.alert-list{ display:flex; flex-direction:column; gap:8px; }
+.alert-row{
+  background:#fff; border:1px solid var(--light-pink); border-radius:var(--radius-sm);
+  padding:12px 14px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:8px;
+  cursor:pointer; transition:box-shadow .15s ease;
+}
+.alert-row:hover{ box-shadow:var(--shadow); }
+.alert-name{ font-weight:700; font-size:14px; }
+.alert-badges{ display:flex; gap:6px; flex-wrap:wrap; }
+.badge{ font-size:11px; font-weight:700; padding:3px 9px; border-radius:20px; color:#fff; }
+.badge-pink{ background:var(--pink); }
+.badge-blue{ background:var(--blue); }
+.badge-sage{ background:var(--sage); }
+.badge-notdue{ background:var(--gray); }
+.badge-tag{ background:var(--soft-pink); color:var(--dark); margin-left:8px; font-weight:700; vertical-align:middle; }
+
+.empty-hint{
+  background:#fff; border:1px dashed var(--soft-blue); border-radius:var(--radius);
+  padding:26px 18px; text-align:center; color:var(--medium); font-size:14px;
+}
+.empty-hint.good{ border-color:var(--sage); background:var(--light-sage); color:var(--dark); font-weight:700; }
+
+/* ---------- Toolbar (search/filter/add) ---------- */
+.toolbar{
+  display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px;
+}
+.toolbar input[type=text], .toolbar select{
+  border:1px solid var(--soft-blue); background:#fff; border-radius:9px; padding:9px 12px;
+  font-size:14px; color:var(--dark); min-width:160px;
+}
+.toolbar .spacer{ flex:1; }
+
+/* ---------- Tables ---------- */
+.table-wrap{ overflow-x:auto; background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); }
+.data-table{ width:100%; border-collapse:collapse; font-size:14px; }
+.data-table th{
+  text-align:left; padding:12px 16px; background:var(--light-blue); color:var(--medium);
+  font-weight:700; font-size:12.5px; white-space:nowrap;
+}
+.data-table td{ padding:12px 16px; border-bottom:1px solid var(--light-pink); white-space:nowrap; }
+.data-table tbody tr:last-child td{ border-bottom:none; }
+.data-table tbody tr:hover{ background:var(--light-sage); }
+.diff.up{ color:var(--sage); font-weight:700; }
+.diff.down{ color:var(--pink); font-weight:700; }
+
+@media (max-width:700px){
+  .table-wrap{ background:none; box-shadow:none; }
+  .data-table thead{ display:none; }
+  .data-table, .data-table tbody, .data-table tr, .data-table td{ display:block; width:100%; }
+  .data-table tr{
+    margin-bottom:12px; background:#fff; border-radius:var(--radius-sm); padding:6px 14px;
+    box-shadow:var(--shadow);
+  }
+  .data-table td{
+    display:flex; justify-content:space-between; align-items:center; gap:10px;
+    padding:9px 0; border:none; white-space:normal; text-align:right;
+  }
+  .data-table td::before{
+    content:attr(data-label); font-weight:700; color:var(--medium); text-align:left;
+  }
+}
+
+/* ---------- Tabs ---------- */
+.tabbar{ display:flex; gap:8px; margin-bottom:16px; }
+.tab-btn{
+  background:#fff; border:1px solid var(--soft-blue); color:var(--medium);
+  padding:8px 16px; border-radius:20px; font-size:13px; font-weight:700; cursor:pointer;
+}
+.tab-btn.active{ background:var(--blue); color:#fff; border-color:var(--blue); }
+
+/* ---------- Expense item cards ---------- */
+.expense-item-card{
+  background:#fff; border-radius:var(--radius); padding:16px 18px; box-shadow:var(--shadow);
+  margin-bottom:12px;
+}
+.expense-item-card.not-due{ opacity:.6; }
+.expense-item-head{
+  display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:6px; margin-bottom:10px;
+}
+.expense-item-name{ font-size:15px; font-weight:700; }
+.expense-item-meta{ font-size:12.5px; color:var(--gray); }
+.progress-track{
+  width:100%; height:8px; border-radius:6px; background:var(--light-sage); overflow:hidden;
+}
+.progress-fill{
+  height:100%; background:linear-gradient(90deg, var(--sage), var(--blue)); border-radius:6px;
+  transition:width .25s ease;
+}
+.progress-label{ font-size:12px; color:var(--medium); display:block; margin-top:6px; }
+.expense-item-progress{ margin-bottom:12px; }
+.expense-item-controls{
+  display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding-top:10px;
+  border-top:1px solid var(--light-blue);
+}
+.check-field{
+  display:flex; align-items:center; gap:6px; font-size:13.5px; font-weight:700; cursor:pointer;
+  color:var(--gray); padding:5px 10px; border-radius:20px; background:var(--bg);
+}
+.check-field input{ width:15px; height:15px; accent-color:var(--sage); cursor:pointer; }
+.check-field.done{ color:var(--dark); background:var(--light-sage); }
+.check-field.pending{ color:var(--pink); background:var(--light-pink); }
+.mini-input{
+  border:1px solid var(--soft-blue); border-radius:8px; padding:6px 8px; font-size:13px;
+  width:118px; background:#fff; color:var(--dark);
+}
+.mini-input:disabled{ background:var(--bg); color:var(--gray); }
+.freq-group{ display:flex; gap:8px; margin-top:6px; }
+.freq-group .check-field{ font-weight:700; }
+.month-grid{
+  display:grid; grid-template-columns:repeat(4, 1fr); gap:6px; margin-top:8px;
+}
+.month-chip{
+  display:flex; align-items:center; justify-content:center; gap:4px;
+  background:var(--bg); border:1px solid var(--soft-blue); border-radius:8px;
+  padding:6px 4px; font-size:12.5px; font-weight:700; color:var(--medium); cursor:pointer;
+}
+.month-chip input{ accent-color:var(--blue); width:13px; height:13px; cursor:pointer; }
+.month-chip:has(input:checked){ background:var(--light-blue); color:var(--dark); border-color:var(--blue); }
+.category-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:6px; }
+.list-chip-wrap{ display:flex; flex-wrap:wrap; gap:8px; }
+.list-chip{
+  display:inline-flex; align-items:center; gap:6px; background:var(--light-pink); color:var(--dark);
+  font-size:13px; font-weight:700; padding:6px 8px 6px 12px; border-radius:20px;
+}
+.list-chip-del{
+  border:none; background:rgba(255,255,255,.6); color:var(--medium); cursor:pointer;
+  width:18px; height:18px; border-radius:50%; font-size:11px; line-height:1; display:flex;
+  align-items:center; justify-content:center;
+}
+.list-chip-del:hover{ background:#fff; color:var(--pink); }
+.category-chips .check-field{ font-weight:700; }
+.balance-row{
+  display:flex; align-items:center; justify-content:space-between; gap:8px;
+  font-size:13px; color:var(--medium); font-weight:700; margin-bottom:12px;
+  padding-bottom:10px; border-bottom:1px solid var(--light-blue);
+}
+.balance-row strong{ font-size:17px; }
+.balance-row strong.up{ color:var(--sage); }
+.balance-row strong.down{ color:var(--pink); }
+.entry-toggle{ display:flex; gap:6px; }
+.vexp-section-label{
+  font-size:12px; font-weight:700; color:var(--gray); text-transform:uppercase; letter-spacing:.3px;
+  margin:14px 0 8px;
+}
+.vexp-add-row{ display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+.vexp-note-input{ flex:1; min-width:120px; }
+.vexp-add-btn{ background:var(--sage); color:#fff; font-size:16px; font-weight:900; width:34px; height:34px; }
+.vexp-list{ margin-top:10px; display:flex; flex-direction:column; gap:6px; }
+.vexp-row{
+  display:flex; align-items:center; gap:10px; background:var(--bg); border-radius:8px;
+  padding:7px 10px; font-size:13px;
+}
+.vexp-amount{ font-weight:700; color:var(--pink); }
+.vexp-note{ color:var(--medium); flex:1; }
+.vexp-del{
+  border:none; background:none; color:var(--gray); cursor:pointer; font-size:13px; padding:2px 4px;
+}
+.vexp-del:hover{ color:var(--pink); }
+.vexp-empty{ font-size:12.5px; color:var(--gray); margin-top:8px; }
+.vexp-total{ font-size:12.5px; color:var(--medium); font-weight:700; margin-top:8px; text-align:right; }
+.vexp-date{ font-size:11.5px; color:var(--gray); flex-shrink:0; }
+.pool-meta-row{ font-size:12.5px; color:var(--medium); line-height:1.8; margin-bottom:10px; }
+.pool-meta-row strong{ color:var(--dark); }
+.field-note{ font-size:11.5px; color:var(--gray); font-weight:500; margin:8px 0 0; line-height:1.5; }
+
+/* ---------- Modal ---------- */
+#modal-overlay{
+  position:fixed; inset:0; background:rgba(55,53,47,.22); display:none;
+  align-items:flex-start; justify-content:center; z-index:100; padding:16px;
+  overflow-y:auto;
+}
+#modal-overlay.show{ display:flex; }
+.modal-box{ margin-top:32px; }
+.modal-box{
+  background:var(--cream); border-radius:var(--radius); width:100%; max-width:440px;
+  max-height:90vh; overflow-y:auto; box-shadow:var(--shadow-md);
+}
+.modal-head{
+  display:flex; justify-content:space-between; align-items:center; padding:18px 20px 8px;
+}
+.modal-head h2{ font-size:17px; margin:0; font-weight:900; }
+.modal-close{ background:none; border:none; font-size:20px; color:var(--gray); cursor:pointer; line-height:1; }
+.modal-body{ padding:8px 20px 22px; }
+.modal-body .form-hint{
+  font-size:12.5px; color:var(--medium); background:var(--light-blue); border-radius:8px;
+  padding:9px 12px; margin:2px 0 16px; line-height:1.5;
+}
+.modal-body form label{
+  display:block; font-size:13px; font-weight:700; color:var(--medium); margin-bottom:14px;
+}
+.modal-body form .field-block{
+  display:block; font-size:13px; font-weight:700; color:var(--medium); margin-bottom:14px;
+}
+.modal-body form input, .modal-body form select{
+  display:block; width:100%; margin-top:6px; padding:10px 12px; border:1px solid var(--soft-blue);
+  border-radius:9px; font-size:14px; color:var(--dark); background:#fff;
+}
+.modal-actions{
+  display:flex; justify-content:flex-end; gap:10px; margin-top:10px;
+  position:sticky; bottom:0; background:var(--cream); padding:10px 0 2px;
+  border-top:1px solid var(--light-blue);
+}
+
+/* ---------- Backup page ---------- */
+.backup-card{
+  background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-bottom:16px;
+}
+.backup-card h3{ margin:0 0 8px; font-size:15px; }
+.backup-card p{ color:var(--medium); font-size:13px; margin:0 0 14px; line-height:1.6; }
+#backup-stats div{ font-size:13.5px; color:var(--medium); padding:3px 0; }
+.backup-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+
+/* ---------- Toast ---------- */
+#toast{
+  position:fixed; left:50%; bottom:88px; transform:translateX(-50%) translateY(10px);
+  background:var(--dark); color:#fff; padding:11px 20px; border-radius:30px; font-size:13.5px;
+  font-weight:700; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease;
+  z-index:200; box-shadow:var(--shadow-md); white-space:nowrap;
+}
+@media (min-width:900px){ #toast{ bottom:24px; } }
+#toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+#toast.error{ background:var(--pink); }
+#toast.info{ background:var(--blue); }
+</style>
+</head>
+<body>
+<script>
+window.addEventListener('error', function(e){
+  try{
+    var el = document.createElement('div');
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:14px;font-size:13px;font-family:monospace;white-space:pre-wrap;';
+    el.textContent = 'JS 錯誤：' + e.message + '\n檔案：' + (e.filename||'') + ' 第 ' + e.lineno + ' 行';
+    document.body.appendChild(el);
+  }catch(_){}
+});
+window.addEventListener('unhandledrejection', function(e){
+  try{
+    var el = document.createElement('div');
+    el.style.cssText = 'position:fixed;top:0;left:0;right:0;z-index:99999;background:#c0392b;color:#fff;padding:14px;font-size:13px;font-family:monospace;white-space:pre-wrap;';
+    el.textContent = 'Promise 錯誤：' + (e.reason && e.reason.message ? e.reason.message : e.reason);
+    document.body.appendChild(el);
+  }catch(_){}
+});
+</script>
+
+<header class="topbar">
+  <div class="topbar-title"><span class="dot"></span>家庭理財小幫手</div>
+  <div class="topbar-month">
+    <label for="global-month-picker">檢視月份</label>
+    <button class="btn-icon month-nav-btn" id="btn-prev-month" title="上個月">‹</button>
+    <input type="month" id="global-month-picker">
+    <button class="btn-icon month-nav-btn" id="btn-next-month" title="下個月">›</button>
+    <button class="btn-link" id="btn-this-month">回到本月</button>
+  </div>
+</header>
+
+<div class="layout">
+  <nav class="sidenav">
+    <button class="nav-btn" data-nav="dashboard">儀表板</button>
+    <button class="nav-btn" data-nav="assets">總資產表</button>
+    <button class="nav-btn" data-nav="income">總收入表</button>
+    <button class="nav-btn" data-nav="fixed">固定支出</button>
+    <button class="nav-btn" data-nav="variable">變動支出</button>
+    <button class="nav-btn" data-nav="backup">備份設定</button>
+  </nav>
+
+  <main>
+    <!-- Dashboard -->
+    <section id="page-dashboard" class="page">
+      <div class="page-header">
+        <div>
+          <h1>儀表板</h1>
+          <div class="page-sub">掌握本月資產、收入與待辦款項</div>
+        </div>
+      </div>
+      <div id="dashboard-cards" class="card-grid"></div>
+      <div class="section-title">本月待辦提醒</div>
+      <div id="dashboard-alert-list" class="alert-list"></div>
+    </section>
+
+    <!-- Assets -->
+    <section id="page-assets" class="page">
+      <div class="page-header">
+        <div>
+          <h1>總資產表</h1>
+          <div class="page-sub">活存、定存、股票市值，每月一筆</div>
+        </div>
+        <button class="btn primary" id="btn-add-asset">＋ 新增紀錄</button>
+      </div>
+      <div class="toolbar">
+        <input type="text" id="assets-search" placeholder="搜尋月份，例如 2026 或 08">
+      </div>
+      <div id="assets-table-wrap" class="table-wrap"></div>
+    </section>
+
+    <!-- Income -->
+    <section id="page-income" class="page">
+      <div class="page-header">
+        <div>
+          <h1>總收入表</h1>
+          <div class="page-sub">依項目分類的收入紀錄</div>
+        </div>
+        <button class="btn primary" id="btn-add-income">＋ 新增紀錄</button>
+      </div>
+      <div class="tabbar">
+        <button class="tab-btn" data-tab="list" data-cat="income">收入紀錄</button>
+        <button class="tab-btn" data-tab="lists" data-cat="income">清單設定</button>
+      </div>
+
+      <div id="income-tab-list">
+        <div class="toolbar">
+          <input type="text" id="income-search" placeholder="搜尋月份，例如 2026 或 08">
+        </div>
+        <div id="income-table-wrap"></div>
+      </div>
+
+      <div id="income-tab-lists" style="display:none;">
+        <div class="page-sub" style="margin-bottom:14px;">管理「項目」「對象」清單，新增收入紀錄時可以直接從這裡挑選。</div>
+        <div id="income-lists-wrap"></div>
+      </div>
+    </section>
+
+    <!-- Fixed Expenses -->
+    <section id="page-fixed" class="page">
+      <div class="page-header">
+        <div>
+          <h1>固定支出</h1>
+          <div class="page-sub" id="fixed-month-heading">支出狀態</div>
+        </div>
+        <button class="btn primary" id="btn-add-fixed">＋ 新增款項</button>
+      </div>
+      <div class="tabbar">
+        <button class="tab-btn" data-tab="month" data-cat="fixed">本月狀態</button>
+        <button class="tab-btn" data-tab="manage" data-cat="fixed">款項管理</button>
+        <button class="tab-btn" data-tab="lists" data-cat="fixed">清單設定</button>
+      </div>
+
+      <div id="fixed-tab-month">
+        <div class="toolbar">
+          <input type="text" id="fixed-search" placeholder="搜尋款項名稱">
+          <select id="fixed-status-filter">
+            <option value="all">全部款項</option>
+            <option value="incomplete">本月尚未完成</option>
+            <option value="paid_pending">未繳費</option>
+            <option value="saved_pending">未存款</option>
+            <option value="complete">本月已全部完成</option>
+          </select>
+        </div>
+        <div id="fixed-month-list"></div>
+      </div>
+
+      <div id="fixed-tab-manage" style="display:none;">
+        <div id="fixed-manage-wrap"></div>
+      </div>
+
+      <div id="fixed-tab-lists" style="display:none;">
+        <div class="page-sub" style="margin-bottom:14px;">管理「分類」「款項名稱」「對象」「繳費方式」這幾份清單，新增款項時可以直接從這裡挑選。</div>
+        <div id="fixed-lists-wrap"></div>
+      </div>
+    </section>
+
+    <!-- Variable Expenses -->
+    <section id="page-variable" class="page">
+      <div class="page-header">
+        <div>
+          <h1>變動支出</h1>
+          <div class="page-sub" id="variable-month-heading">支出狀態</div>
+        </div>
+        <button class="btn primary" id="btn-add-variable">＋ 新增款項</button>
+      </div>
+      <div class="tabbar">
+        <button class="tab-btn" data-tab="month" data-cat="variable">本月狀態</button>
+        <button class="tab-btn" data-tab="manage" data-cat="variable">款項管理</button>
+        <button class="tab-btn" data-tab="lists" data-cat="variable">清單設定</button>
+      </div>
+
+      <div id="variable-tab-month">
+        <div class="toolbar">
+          <input type="text" id="variable-search" placeholder="搜尋款項名稱">
+          <select id="variable-tag-filter">
+            <option value="all">全部模式</option>
+            <option value="save">存</option>
+            <option value="replenish">補</option>
+          </select>
+        </div>
+        <div id="variable-month-list"></div>
+      </div>
+
+      <div id="variable-tab-manage" style="display:none;">
+        <div id="variable-manage-wrap"></div>
+      </div>
+
+      <div id="variable-tab-lists" style="display:none;">
+        <div class="page-sub" style="margin-bottom:14px;">管理「款項名稱」清單，新增款項時可以直接從這裡挑選。</div>
+        <div id="variable-lists-wrap"></div>
+      </div>
+    </section>
+
+    <!-- Backup -->
+    <section id="page-backup" class="page">
+      <div class="page-header">
+        <div>
+          <h1>備份設定</h1>
+          <div class="page-sub">資料儲存在此瀏覽器內，建議定期匯出備份</div>
+        </div>
+      </div>
+
+      <div class="backup-card">
+        <h3>目前資料量</h3>
+        <div id="backup-stats"></div>
+      </div>
+
+      <div class="backup-card">
+        <h3>匯出備份</h3>
+        <p>將所有資料下載為 JSON 檔案，可保存在雲端硬碟或傳送到其他裝置。</p>
+        <div class="backup-actions">
+          <button class="btn primary" id="btn-export">匯出備份檔</button>
+        </div>
+      </div>
+
+      <div class="backup-card">
+        <h3>匯入備份</h3>
+        <p>選擇先前匯出的 JSON 檔案還原資料。匯入將會覆蓋目前瀏覽器中的所有資料，請先確認。</p>
+        <div class="backup-actions">
+          <button class="btn secondary" id="btn-import">選擇檔案匯入</button>
+          <input type="file" id="file-import" accept="application/json" style="display:none;">
+        </div>
+      </div>
+
+      <div class="backup-card">
+        <h3>清除資料</h3>
+        <p>清除此瀏覽器內儲存的所有資產、收入與支出資料，此動作無法復原。</p>
+        <div class="backup-actions">
+          <button class="btn danger-outline" id="btn-clear-all">清除所有資料</button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<nav class="bottomnav">
+  <button class="nav-btn" data-nav="dashboard">儀表板</button>
+  <button class="nav-btn" data-nav="assets">資產</button>
+  <button class="nav-btn" data-nav="income">收入</button>
+  <button class="nav-btn" data-nav="fixed">固定</button>
+  <button class="nav-btn" data-nav="variable">變動</button>
+  <button class="nav-btn" data-nav="backup">備份</button>
+</nav>
+
+<div id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-head">
+      <h2 id="modal-title"></h2>
+      <button class="modal-close" data-close>&times;</button>
+    </div>
+    <div class="modal-body" id="modal-body"></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = 'ffm_data_v1';
+
+  function defaultState(){
+    return {
+      assets: [], incomes: [], incomeItems: [], expenseItems: [], expenseRecords: [], variableExpenses: [],
+      pickLists: {
+        category: ['保險', '稅金', '家用', '貸款', '電信'],
+        itemName: [],
+        payee: [],
+        paymentMethod: [],
+        variableName: ['交通', '育兒', '生活費', '毛孩', '備用'],
+        incomeType: ['薪資', '津貼', '股息', '獎金', '其他'],
+        incomePayee: []
+      }
+    };
+  }
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return defaultState();
+      var parsed = JSON.parse(raw);
+      var base = defaultState();
+      var pl = parsed.pickLists || {};
+      return {
+        assets: Array.isArray(parsed.assets) ? parsed.assets : base.assets,
+        incomes: Array.isArray(parsed.incomes) ? parsed.incomes : base.incomes,
+        incomeItems: Array.isArray(parsed.incomeItems) ? parsed.incomeItems : base.incomeItems,
+        expenseItems: Array.isArray(parsed.expenseItems) ? parsed.expenseItems : base.expenseItems,
+        expenseRecords: Array.isArray(parsed.expenseRecords) ? parsed.expenseRecords : base.expenseRecords,
+        variableExpenses: Array.isArray(parsed.variableExpenses) ? parsed.variableExpenses : base.variableExpenses,
+        pickLists: {
+          category: Array.isArray(pl.category) ? pl.category : base.pickLists.category,
+          itemName: Array.isArray(pl.itemName) ? pl.itemName : base.pickLists.itemName,
+          payee: Array.isArray(pl.payee) ? pl.payee : base.pickLists.payee,
+          paymentMethod: Array.isArray(pl.paymentMethod) ? pl.paymentMethod : base.pickLists.paymentMethod,
+          variableName: Array.isArray(pl.variableName) ? pl.variableName : base.pickLists.variableName,
+          incomeType: Array.isArray(pl.incomeType) ? pl.incomeType : base.pickLists.incomeType,
+          incomePayee: Array.isArray(pl.incomePayee) ? pl.incomePayee : base.pickLists.incomePayee
+        }
+      };
+    }catch(e){
+      console.error('讀取資料失敗', e);
+      return defaultState();
+    }
+  }
+
+  var state = loadState();
+  normalizeExpenseItems();
+  normalizeIncome();
+  var currentPage = 'dashboard';
+  var fixedTab = 'month';
+  var variableTab = 'month';
+  var incomeTab = 'list';
+
+  // 把舊版「一個月一筆、五個固定欄位」的收入資料，一次性轉換成新版「多筆項目式」紀錄；
+  // 只在還沒轉換過（incomeItems 是空的，但舊資料 incomes 有內容）時執行一次，之後不會重複轉換。
+  function normalizeIncome(){
+    if(state.incomeItems.length > 0 || state.incomes.length === 0) return;
+    var fieldLabel = { salary:'薪資', allowance:'津貼', dividend:'股息', bonus:'獎金', other:'其他' };
+    state.incomes.forEach(function(rec){
+      Object.keys(fieldLabel).forEach(function(f){
+        var amt = Number(rec[f]) || 0;
+        if(amt > 0){
+          state.incomeItems.push({
+            id: uid('incitem'), month: rec.month, itemType: fieldLabel[f], payee: '', amount: amt, note: ''
+          });
+        }
+      });
+    });
+    saveState();
+  }
+
+  function normalizeExpenseItems(){
+    var changed = false;
+    state.expenseItems.forEach(function(it){
+      if(!it.category){ it.category = 'fixed'; changed = true; }
+      if(it.category === 'fixed'){
+        if(it.amount == null){
+          it.amount = it.annualAmount != null ? Number(it.annualAmount) || 0 : 0;
+          changed = true;
+        }
+        if(!Array.isArray(it.paymentMonths)){ it.paymentMonths = []; changed = true; }
+        if(it.payee == null){ it.payee = ''; changed = true; }
+        if(it.paymentMethod == null){ it.paymentMethod = ''; changed = true; }
+      } else {
+        if(it.mode !== 'save' && it.mode !== 'replenish'){ it.mode = 'save'; changed = true; }
+        if(it.monthlyAmount == null){ it.monthlyAmount = 0; changed = true; }
+        if(it.capAmount == null){ it.capAmount = 0; changed = true; }
+        if(!it.createdMonth){ it.createdMonth = currentMonthStr(); changed = true; }
+        if(it.payee == null){ it.payee = ''; changed = true; }
+        if(it.paymentMethod == null){ it.paymentMethod = ''; changed = true; }
+        if('monthlyBudget' in it){ delete it.monthlyBudget; changed = true; }
+      }
+      if(it.tag == null){ it.tag = ''; changed = true; }
+      if('annualAmount' in it){ delete it.annualAmount; changed = true; }
+      if('frequency' in it){ delete it.frequency; changed = true; }
+    });
+    if(changed) saveState();
+  }
+
+  function saveState(){
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }catch(e){
+      showToast('儲存失敗，瀏覽器儲存空間可能已滿', 'error');
+    }
+  }
+
+  function uid(prefix){
+    return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8);
+  }
+
+  function currentMonthStr(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+  var selectedMonth = currentMonthStr();
+
+  function todayStr(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+  }
+  function monthNumOf(m){ return parseInt(m.split('-')[1], 10); }
+
+  function formatMonthLabel(m){
+    var parts = m.split('-');
+    return parts[0] + '/' + String(parseInt(parts[1],10)).padStart(2,'0');
+  }
+  function prevMonthStr(m){
+    var parts = m.split('-').map(Number);
+    var y = parts[0], mo = parts[1] - 1;
+    if(mo === 0){ y -= 1; mo = 12; }
+    return y + '-' + String(mo).padStart(2,'0');
+  }
+  function nextMonthStr(m){
+    var parts = m.split('-').map(Number);
+    var y = parts[0], mo = parts[1] + 1;
+    if(mo === 13){ y += 1; mo = 1; }
+    return y + '-' + String(mo).padStart(2,'0');
+  }
+  function yearOf(m){ return m.split('-')[0]; }
+  function formatMoney(n){
+    n = Number(n) || 0;
+    return Math.round(n).toLocaleString('zh-TW');
+  }
+  function escapeHtml(str){
+    return String(str == null ? '' : str).replace(/[&<>"']/g, function(s){
+      return ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[s];
+    });
+  }
+
+  /* ============ Data helpers ============ */
+  function getAssetTotal(a){ return (Number(a.cash)||0) + (Number(a.deposit)||0) + (Number(a.stock)||0); }
+  function getIncomeMonthTotal(monthStr){
+    return state.incomeItems
+      .filter(function(x){ return x.month === monthStr; })
+      .reduce(function(sum, x){ return sum + (Number(x.amount) || 0); }, 0);
+  }
+  function monthAbs(monthStr){
+    var p = monthStr.split('-').map(Number);
+    return p[0] * 12 + (p[1] - 1);
+  }
+  function monthStrFromAbs(abs){
+    var y = Math.floor(abs / 12);
+    var m = (((abs % 12) + 12) % 12) + 1;
+    return y + '-' + String(m).padStart(2,'0');
+  }
+  function effectivePaymentMonths(item){
+    if(item.paymentMonths && item.paymentMonths.length){
+      return item.paymentMonths.slice().sort(function(a,b){ return a-b; });
+    }
+    return [1,2,3,4,5,6,7,8,9,10,11,12];
+  }
+  function isEvenlySpaced(monthsAsc, gap){
+    for(var i = 1; i < monthsAsc.length; i++){
+      if(monthsAsc[i] - monthsAsc[i-1] !== gap) return false;
+    }
+    if((monthsAsc[0] + 12 - monthsAsc[monthsAsc.length - 1]) !== gap) return false;
+    return true;
+  }
+  // 自動判斷繳費週期：依照勾選的繳費月份數量與間隔，判斷是年繳／月繳／雙月繳／季繳／自訂週期
+  function frequencyInfo(item){
+    var months = effectivePaymentMonths(item);
+    var n = months.length;
+    var label;
+    if(n === 12){ label = '月繳'; }
+    else if(n === 1){ label = '年繳'; }
+    else if(n === 6 && isEvenlySpaced(months, 2)){ label = '雙月繳'; }
+    else if(n === 4 && isEvenlySpaced(months, 3)){ label = '季繳'; }
+    else { label = '每年' + n + '次'; }
+    return { label: label, occurrencesPerYear: n, months: months };
+  }
+  function monthlyBudgetOf(item){
+    var amount = Number(item.amount) || 0;
+    var info = frequencyInfo(item);
+    return Math.round(amount * info.occurrencesPerYear / 12);
+  }
+  // 找出「本次繳費週期」：從上一次繳費月份的隔月，到下一次繳費月份（以此作為進度條的存款週期與總額）
+  function cycleFor(item, selectedMonthStr){
+    var months = effectivePaymentMonths(item);
+    var selectedAbs = monthAbs(selectedMonthStr);
+    var year = Math.floor(selectedAbs / 12);
+    var candidates = [];
+    [year - 1, year, year + 1].forEach(function(y){
+      months.forEach(function(m){ candidates.push(y * 12 + (m - 1)); });
+    });
+    candidates.sort(function(a,b){ return a - b; });
+    var nextAbs = null;
+    for(var i = 0; i < candidates.length; i++){
+      if(candidates[i] >= selectedAbs){ nextAbs = candidates[i]; break; }
+    }
+    var prevAbs = null;
+    for(var j = candidates.length - 1; j >= 0; j--){
+      if(candidates[j] < nextAbs){ prevAbs = candidates[j]; break; }
+    }
+    var startAbs = prevAbs + 1;
+    return {
+      startAbs: startAbs,
+      nextPaymentAbs: nextAbs,
+      startMonth: monthStrFromAbs(startAbs),
+      nextPaymentMonth: monthStrFromAbs(nextAbs)
+    };
+  }
+  function cycleSaved(item, selectedMonthStr){
+    var cyc = cycleFor(item, selectedMonthStr);
+    var selectedAbs = monthAbs(selectedMonthStr);
+    return state.expenseRecords
+      .filter(function(r){
+        if(r.itemId !== item.id || !r.saved) return false;
+        var a = monthAbs(r.month);
+        return a >= cyc.startAbs && a <= selectedAbs;
+      })
+      .reduce(function(sum, r){ return sum + (Number(r.savedAmount) || 0); }, 0);
+  }
+  function isDueInMonth(item, monthStr){
+    if(!item.paymentMonths || item.paymentMonths.length === 0) return true;
+    return item.paymentMonths.indexOf(monthNumOf(monthStr)) !== -1;
+  }
+  function formatPaymentMonths(pm){
+    if(!pm || pm.length === 0 || pm.length === 12) return '每月';
+    return pm.slice().sort(function(a,b){ return a-b; }).join('、');
+  }
+
+  /* ---- 變動支出：額度資金池（存 / 補 兩種模式）----
+     存模式：每月固定存入設定額度，不論上月餘額；
+     補模式：設定上限，依上月花費建議本月要補多少，實際補入金額仍需每月記錄。
+     資金池(M) = 資金池(M-1) - 花費(M) + 本月存入/補入(M)
+  */
+  function variableMonthExpenses(itemId, monthStr){
+    return state.variableExpenses.filter(function(x){ return x.itemId === itemId && x.month === monthStr; });
+  }
+  function variableSpendingInMonth(itemId, monthStr){
+    return variableMonthExpenses(itemId, monthStr).reduce(function(sum, x){ return sum + (Number(x.amount) || 0); }, 0);
+  }
+  // 兩種模式都要等使用者打勾確認才會計入資金池，避免忘記記錄；未打勾的月份只會保留上個月餘額（扣掉上月花費），不會自動加總本月存入/補入。
+  // 存模式：輸入框預設帶入固定額度；補模式：輸入框預設帶入建議補足金額（皆可自行調整）。
+  function variableContribution(item, monthStr){
+    var rec = getRecord(item.id, monthStr);
+    return (rec && rec.saved) ? (Number(rec.savedAmount) || 0) : 0;
+  }
+  // 資金池計算起點：不能只看「款項建立月份」，因為使用者可能事後回填更早月份的紀錄
+  // （例如款項是 9 月才新增，但回頭把 8 月也打勾記錄了），所以要取「建立月份」與所有
+  // 實際存在的存入/補入/花費紀錄中最早的那個月，確保回填的資料不會被忽略。
+  function variableEarliestMonth(item){
+    var earliest = item.createdMonth || currentMonthStr();
+    state.expenseRecords.forEach(function(r){
+      if(r.itemId === item.id && r.saved && monthAbs(r.month) < monthAbs(earliest)) earliest = r.month;
+    });
+    state.variableExpenses.forEach(function(x){
+      if(x.itemId === item.id && monthAbs(x.month) < monthAbs(earliest)) earliest = x.month;
+    });
+    return earliest;
+  }
+  // 資金池(M) = 資金池(M-1) + 本月存入/補入(M) - 本月花費(M)：記帳當下就會立即反映在當月餘額，不用等到下個月才扣除。
+  function variablePoolBalance(item, uptoMonthStr){
+    var startAbs = monthAbs(variableEarliestMonth(item));
+    var targetAbs = monthAbs(uptoMonthStr);
+    if(targetAbs < startAbs) return 0;
+    var balance = 0;
+    for(var abs = startAbs; abs <= targetAbs; abs++){
+      var m = monthStrFromAbs(abs);
+      balance = balance - variableSpendingInMonth(item.id, m) + variableContribution(item, m);
+    }
+    return balance;
+  }
+  // 補模式：這個月建議補多少，只看「上個月結束時的餘額」跟上限的差距——
+  // 補的動作是這個月要優先做的事，不用管這個月之後才發生的花費（那些花費之後會直接反映在餘額上，
+  // 月底不一定會剛好等於上限，等下個月再補即可）。
+  function suggestedReplenish(item, monthStr){
+    var prevBalance = variablePoolBalance(item, prevMonthStr(monthStr));
+    var suggested = (Number(item.capAmount) || 0) - prevBalance;
+    return suggested > 0 ? Math.round(suggested) : 0;
+  }
+  // 兩種模式都以打勾金額紀錄為準；此函式只負責提供「預設建議值」讓輸入框預先帶入
+  function suggestedContribution(item, monthStr){
+    if(item.mode === 'save') return Math.round(Number(item.monthlyAmount) || 0);
+    return suggestedReplenish(item, monthStr);
+  }
+  function upsertVariableExpense(itemId, monthStr, subItem, amount, dateStr, paymentMethod){
+    subItem = String(subItem || '').trim();
+    var existing = state.variableExpenses.find(function(x){
+      return x.itemId === itemId && x.month === monthStr && x.subItem === subItem;
+    });
+    if(existing){
+      existing.amount = (Number(existing.amount) || 0) + (Number(amount) || 0);
+      existing.date = dateStr || existing.date;
+      existing.paymentMethod = paymentMethod || existing.paymentMethod || '';
+    } else {
+      state.variableExpenses.push({
+        id: uid('vexp'), itemId: itemId, month: monthStr, subItem: subItem,
+        amount: Number(amount) || 0, date: dateStr || todayStr(), paymentMethod: paymentMethod || ''
+      });
+    }
+    saveState();
+  }
+  function deleteVariableExpense(id){
+    state.variableExpenses = state.variableExpenses.filter(function(x){ return x.id !== id; });
+    saveState();
+  }
+
+  var ASSET_FIELDS = ['cash','deposit','stock'];
+
+  // raw: 物件，值為表單原始字串（可能是 '' 代表留空）。
+  // editId 有值 = 編輯既有那一筆（欄位直接覆蓋，留空視為 0）。
+  // editId 無值 = 新增一筆（若該月份已有資料，只把「有填寫」的欄位加總進去；留空欄位不受影響）。
+  function upsertAsset(month, raw, editId){
+    if(editId){
+      var idx = state.assets.findIndex(function(a){ return a.id === editId; });
+      if(idx < 0) return { ok:false };
+      var collide = state.assets.find(function(a){ return a.month === month && a.id !== editId; });
+      if(collide) return { ok:false, reason:'collide' };
+      state.assets[idx].month = month;
+      ASSET_FIELDS.forEach(function(f){
+        state.assets[idx][f] = raw[f] === '' ? 0 : (Number(raw[f]) || 0);
+      });
+      saveState();
+      return { ok:true, mode:'edit' };
+    }
+    var existing = state.assets.find(function(a){ return a.month === month; });
+    if(existing){
+      ASSET_FIELDS.forEach(function(f){
+        if(raw[f] !== ''){ existing[f] = (Number(existing[f]) || 0) + (Number(raw[f]) || 0); }
+      });
+      saveState();
+      return { ok:true, mode:'accumulate' };
+    }
+    var rec = { id: uid('asset'), month: month };
+    ASSET_FIELDS.forEach(function(f){ rec[f] = raw[f] === '' ? 0 : (Number(raw[f]) || 0); });
+    state.assets.push(rec);
+    saveState();
+    return { ok:true, mode:'create' };
+  }
+  function deleteAsset(id){ state.assets = state.assets.filter(function(a){ return a.id !== id; }); saveState(); }
+
+  // 收入改成項目式：每一筆是獨立的一筆收入（項目＋對象＋月份＋金額），同一個月可以有多筆、
+  // 同一個項目也可以有多筆（例如兩份薪資），彼此不會自動合併。
+  function upsertIncomeItem(data){
+    if(data.id){
+      var idx = state.incomeItems.findIndex(function(x){ return x.id === data.id; });
+      if(idx >= 0){ state.incomeItems[idx] = Object.assign({}, state.incomeItems[idx], data); }
+    } else {
+      state.incomeItems.push(Object.assign({ id: uid('incitem') }, data));
+    }
+    saveState();
+  }
+  function deleteIncomeItem(id){
+    state.incomeItems = state.incomeItems.filter(function(x){ return x.id !== id; });
+    saveState();
+  }
+
+  function upsertExpenseItem(data){
+    if(data.id){
+      var idx = state.expenseItems.findIndex(function(e){ return e.id === data.id; });
+      if(idx >= 0){ state.expenseItems[idx] = Object.assign({}, state.expenseItems[idx], data); }
+    } else {
+      state.expenseItems.push(Object.assign({ id: uid('item') }, data));
+    }
+    saveState();
+  }
+  function deleteExpenseItem(id){
+    state.expenseItems = state.expenseItems.filter(function(e){ return e.id !== id; });
+    state.expenseRecords = state.expenseRecords.filter(function(r){ return r.itemId !== id; });
+    state.variableExpenses = state.variableExpenses.filter(function(x){ return x.itemId !== id; });
+    saveState();
+  }
+
+  /* ---- 固定支出：可自訂清單（分類／款項名稱／對象／繳費方式）---- */
+  var PICK_LIST_LABELS = { category: '分類', itemName: '款項名稱', payee: '對象', paymentMethod: '繳費方式', variableName: '款項名稱', incomeType: '項目', incomePayee: '對象' };
+  function addPickListValue(listKey, value){
+    value = String(value || '').trim();
+    if(!value) return false;
+    if(!state.pickLists[listKey]) state.pickLists[listKey] = [];
+    if(state.pickLists[listKey].indexOf(value) === -1){
+      state.pickLists[listKey].push(value);
+      saveState();
+    }
+    return true;
+  }
+  function deletePickListValue(listKey, value){
+    if(!state.pickLists[listKey]) return;
+    state.pickLists[listKey] = state.pickLists[listKey].filter(function(v){ return v !== value; });
+    saveState();
+  }
+
+  function getRecord(itemId, month){
+    return state.expenseRecords.find(function(r){ return r.itemId === itemId && r.month === month; });
+  }
+  function upsertRecord(itemId, month, patch){
+    var rec = getRecord(itemId, month);
+    if(!rec){
+      rec = { id: uid('rec'), itemId: itemId, month: month, paid:false, paidDate:'', saved:false, savedAmount:0 };
+      state.expenseRecords.push(rec);
+    }
+    Object.assign(rec, patch);
+    saveState();
+    return rec;
+  }
+
+  /* ============ Nav / routing ============ */
+  function showPage(pageId){
+    document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+    var target = document.getElementById('page-' + pageId);
+    if(target) target.classList.add('active');
+    document.querySelectorAll('[data-nav]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.nav === pageId);
+    });
+    currentPage = pageId;
+    renderCurrentPage();
+    window.scrollTo(0,0);
+  }
+
+  function setExpenseTab(cat, tab){
+    if(cat === 'income'){ incomeTab = tab; renderIncomePage(); return; }
+    if(cat === 'fixed') fixedTab = tab; else variableTab = tab;
+    renderExpensePage(cat);
+  }
+
+  function setSelectedMonth(m){
+    if(!m) return;
+    selectedMonth = m;
+    var picker = document.getElementById('global-month-picker');
+    if(picker) picker.value = m;
+    renderCurrentPage();
+  }
+
+  function renderCurrentPage(){
+    if(currentPage === 'dashboard') renderDashboard();
+    else if(currentPage === 'assets') renderAssetsPage();
+    else if(currentPage === 'income') renderIncomePage();
+    else if(currentPage === 'fixed') renderExpensePage('fixed');
+    else if(currentPage === 'variable') renderExpensePage('variable');
+    else if(currentPage === 'backup') renderBackupPage();
+  }
+
+  /* ============ Dashboard ============ */
+  function renderDashboard(){
+    var asset = state.assets.find(function(a){ return a.month === selectedMonth; });
+    var prevAsset = state.assets.find(function(a){ return a.month === prevMonthStr(selectedMonth); });
+    var total = asset ? getAssetTotal(asset) : 0;
+    var prevTotal = prevAsset ? getAssetTotal(prevAsset) : null;
+    var diff = (asset && prevAsset) ? (total - prevTotal) : null;
+
+    var incomeTotal = getIncomeMonthTotal(selectedMonth);
+
+    var fixedItems = state.expenseItems.filter(function(it){ return it.category === 'fixed'; });
+    var variableItems = state.expenseItems.filter(function(it){ return it.category === 'variable'; });
+    var pendingPaid = 0, pendingSaved = 0;
+    fixedItems.forEach(function(it){
+      var rec = getRecord(it.id, selectedMonth);
+      if(isDueInMonth(it, selectedMonth) && (!rec || !rec.paid)) pendingPaid++;
+      if(!rec || !rec.saved) pendingSaved++;
+    });
+    variableItems.forEach(function(it){
+      var rec = getRecord(it.id, selectedMonth);
+      if(!rec || !rec.saved) pendingSaved++;
+    });
+
+    var cardsHtml =
+      '<div class="card">' +
+        '<div class="card-label">' + formatMonthLabel(selectedMonth) + ' 總資產</div>' +
+        '<div class="stat-value">NT$ ' + formatMoney(total) + '</div>' +
+        (diff !== null
+          ? '<div class="stat-diff ' + (diff >= 0 ? 'up' : 'down') + '">' + (diff >= 0 ? '▲' : '▼') + ' NT$ ' + formatMoney(Math.abs(diff)) + ' 較上月</div>'
+          : '<div class="stat-diff muted">尚無上月資料可比較</div>') +
+      '</div>' +
+      '<div class="card">' +
+        '<div class="card-label">' + formatMonthLabel(selectedMonth) + ' 總收入</div>' +
+        '<div class="stat-value">NT$ ' + formatMoney(incomeTotal) + '</div>' +
+      '</div>' +
+      '<div class="card' + (pendingPaid > 0 ? ' alert' : '') + '">' +
+        '<div class="card-label">固定支出：本月未繳費</div><div class="stat-value">' + pendingPaid + ' 筆</div>' +
+      '</div>' +
+      '<div class="card' + (pendingSaved > 0 ? ' alert' : '') + '">' +
+        '<div class="card-label">本月未存入款項</div><div class="stat-value">' + pendingSaved + ' 筆</div>' +
+      '</div>';
+    document.getElementById('dashboard-cards').innerHTML = cardsHtml;
+
+    var listEl = document.getElementById('dashboard-alert-list');
+    if(state.expenseItems.length === 0){
+      listEl.innerHTML = '<div class="empty-hint">尚未建立任何支出款項，前往「固定支出」或「變動支出」新增，例如：房屋保險、車險、孩子學費、交通備用金。</div>';
+    } else {
+      var alertItems = state.expenseItems.filter(function(it){
+        var rec = getRecord(it.id, selectedMonth);
+        var paidDue = it.category === 'fixed' && isDueInMonth(it, selectedMonth);
+        return (paidDue && (!rec || !rec.paid)) || (!rec || !rec.saved);
+      });
+      if(alertItems.length === 0){
+        listEl.innerHTML = '<div class="empty-hint good">' + formatMonthLabel(selectedMonth) + ' 所有款項都已完成，太棒了！</div>';
+      } else {
+        listEl.innerHTML = alertItems.map(function(it){
+          var rec = getRecord(it.id, selectedMonth);
+          var badges = '';
+          var catLabel = it.category === 'variable' ? '變動' : '固定';
+          if(it.category === 'fixed' && isDueInMonth(it, selectedMonth) && (!rec || !rec.paid)) badges += '<span class="badge badge-pink">未繳費</span>';
+          if(!rec || !rec.saved) badges += '<span class="badge badge-blue">未存入</span>';
+          return '<div class="alert-row" data-goto-item="' + it.id + '" data-goto-cat="' + it.category + '">' +
+            '<span class="alert-name">[' + catLabel + '] ' + escapeHtml(it.name) + '</span>' +
+            '<span class="alert-badges">' + badges + '</span>' +
+          '</div>';
+        }).join('');
+      }
+    }
+  }
+
+  /* ============ Assets page ============ */
+  function renderAssetsPage(){
+    var searchEl = document.getElementById('assets-search');
+    var search = searchEl ? searchEl.value.trim() : '';
+    var rows = state.assets.slice().sort(function(a,b){ return b.month.localeCompare(a.month); });
+    if(search) rows = rows.filter(function(r){ return r.month.indexOf(search) !== -1; });
+
+    var wrap = document.getElementById('assets-table-wrap');
+    if(rows.length === 0){
+      wrap.innerHTML = '<div class="empty-hint">尚無資產紀錄，點擊右上角「新增紀錄」開始建立。</div>';
+      return;
+    }
+    var html = '<table class="data-table"><thead><tr>' +
+      '<th>月份</th><th>活存</th><th>定存</th><th>股票市值</th><th>合計</th><th>較上月</th><th>操作</th>' +
+      '</tr></thead><tbody>';
+    rows.forEach(function(a){
+      var total = getAssetTotal(a);
+      var prev = state.assets.find(function(x){ return x.month === prevMonthStr(a.month); });
+      var diff = prev ? (total - getAssetTotal(prev)) : null;
+      html += '<tr>' +
+        '<td data-label="月份"><strong>' + formatMonthLabel(a.month) + '</strong></td>' +
+        '<td data-label="活存">NT$ ' + formatMoney(a.cash) + '</td>' +
+        '<td data-label="定存">NT$ ' + formatMoney(a.deposit) + '</td>' +
+        '<td data-label="股票市值">NT$ ' + formatMoney(a.stock) + '</td>' +
+        '<td data-label="合計"><strong>NT$ ' + formatMoney(total) + '</strong></td>' +
+        '<td data-label="較上月">' + (diff === null ? '—' : '<span class="diff ' + (diff >= 0 ? 'up' : 'down') + '">' + (diff >= 0 ? '▲' : '▼') + ' ' + formatMoney(Math.abs(diff)) + '</span>') + '</td>' +
+        '<td data-label="操作">' +
+          '<button class="btn-icon" data-edit-asset="' + a.id + '" title="編輯">✎</button>' +
+          '<button class="btn-icon danger" data-del-asset="' + a.id + '" title="刪除">🗑</button>' +
+        '</td>' +
+      '</tr>';
+    });
+    html += '</tbody></table>';
+    wrap.innerHTML = html;
+  }
+
+  function openAssetModal(existing){
+    var isEdit = !!existing;
+    var a = existing || { month: selectedMonth, cash:'', deposit:'', stock:'' };
+    var hint = isEdit
+      ? '直接輸入正確金額即可，會覆蓋這一筆原本的資料。'
+      : '只填有金額異動的欄位就好，留空的欄位不會被更動；若該月份已有資料，填寫的欄位會自動累加上去。';
+    var html =
+      '<form id="asset-form">' +
+        '<p class="form-hint">' + hint + '</p>' +
+        '<label>月份<input type="month" name="month" value="' + a.month + '" required></label>' +
+        '<label>活存金額 (NT$)<input type="number" name="cash" value="' + a.cash + '" step="1" placeholder="留空 = 不異動"></label>' +
+        '<label>定存金額 (NT$)<input type="number" name="deposit" value="' + a.deposit + '" step="1" placeholder="留空 = 不異動"></label>' +
+        '<label>股票市值 (NT$)<input type="number" name="stock" value="' + a.stock + '" step="1" placeholder="留空 = 不異動"></label>' +
+        '<div class="modal-actions">' +
+          '<button type="button" class="btn secondary" data-close>取消</button>' +
+          '<button type="button" class="btn primary" id="modal-submit-btn">儲存</button>' +
+        '</div>' +
+      '</form>';
+    openModal(isEdit ? '編輯資產紀錄' : '新增資產紀錄', html, function(){
+      document.getElementById('modal-submit-btn').addEventListener('click', function(e){
+        e.preventDefault();
+        var fd = new FormData(document.getElementById('asset-form'));
+        var month = fd.get('month');
+        if(!month){ showToast('請選擇月份', 'error'); return; }
+        var raw = { cash: fd.get('cash'), deposit: fd.get('deposit'), stock: fd.get('stock') };
+        var result = upsertAsset(month, raw, isEdit ? existing.id : null);
+        if(!result.ok){
+          if(result.reason === 'collide'){ showToast('該月份已有其他資產紀錄，請改用「新增」以累加金額', 'error'); }
+          else{ showToast('儲存失敗', 'error'); }
+          return;
+        }
+        closeModal();
+        renderCurrentPage();
+        showToast(result.mode === 'accumulate' ? '已累加至該月份的資產資料' : '已儲存資產紀錄');
+      });
+    });
+  }
+
+  /* ============ Income page ============ */
+  function renderIncomePage(){
+    document.querySelectorAll('[data-tab][data-cat="income"]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab === incomeTab);
+    });
+    if(incomeTab === 'lists'){
+      document.getElementById('income-tab-list').style.display = 'none';
+      document.getElementById('income-tab-lists').style.display = '';
+      renderPickListsInto('income-lists-wrap', ['incomeType', 'incomePayee']);
+      return;
+    }
+    document.getElementById('income-tab-list').style.display = '';
+    document.getElementById('income-tab-lists').style.display = 'none';
+
+    var searchEl = document.getElementById('income-search');
+    var search = searchEl ? searchEl.value.trim() : '';
+    var rows = state.incomeItems.slice();
+    if(search) rows = rows.filter(function(r){ return r.month.indexOf(search) !== -1; });
+    rows.sort(function(a,b){ return b.month.localeCompare(a.month); });
+
+    var wrap = document.getElementById('income-table-wrap');
+    if(rows.length === 0){
+      wrap.innerHTML = '<div class="empty-hint">尚無收入紀錄，點擊右上角「新增紀錄」開始建立。</div>';
+      return;
+    }
+
+    var groups = {};
+    var groupOrder = [];
+    rows.forEach(function(r){
+      var key = r.itemType || '未分類';
+      if(!groups[key]){ groups[key] = []; groupOrder.push(key); }
+      groups[key].push(r);
+    });
+    var typeOrder = state.pickLists.incomeType || [];
+    groupOrder.sort(function(a, b){
+      if(a === '未分類') return 1;
+      if(b === '未分類') return -1;
+      var ia = typeOrder.indexOf(a); if(ia === -1) ia = 999;
+      var ib = typeOrder.indexOf(b); if(ib === -1) ib = 999;
+      if(ia !== ib) return ia - ib;
+      return a.localeCompare(b);
+    });
+
+    wrap.innerHTML = groupOrder.map(function(key){
+      var items = groups[key];
+      var groupTotal = items.reduce(function(s, r){ return s + (Number(r.amount) || 0); }, 0);
+      var trs = items.map(function(r){
+        return '<tr>' +
+          '<td data-label="月份"><strong>' + formatMonthLabel(r.month) + '</strong></td>' +
+          '<td data-label="對象">' + (r.payee ? escapeHtml(r.payee) : '—') + '</td>' +
+          '<td data-label="金額">NT$ ' + formatMoney(r.amount) + '</td>' +
+          '<td data-label="備註">' + escapeHtml(r.note || '—') + '</td>' +
+          '<td data-label="操作">' +
+            '<button class="btn-icon" data-edit-income="' + r.id + '" title="編輯">✎</button>' +
+            '<button class="btn-icon danger" data-del-income="' + r.id + '" title="刪除">🗑</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return (
+        '<div class="section-title">' + escapeHtml(key) + '（' + items.length + '筆，合計 NT$ ' + formatMoney(groupTotal) + '）</div>' +
+        '<div class="table-wrap" style="margin-bottom:18px;"><table class="data-table"><thead><tr>' +
+          '<th>月份</th><th>對象</th><th>金額</th><th>備註</th><th>操作</th>' +
+        '</tr></thead><tbody>' + trs + '</tbody></table></div>'
+      );
+    }).join('');
+  }
+
+  function openIncomeModal(existing){
+    var isEdit = !!existing;
+
+    if(isEdit){
+      var i = existing;
+      var editHtml =
+        '<form id="income-form">' +
+          pickerFieldHtml('incomeType', i.itemType || '', true) +
+          pickerFieldHtml('incomePayee', i.payee || '', false) +
+          '<label>月份<input type="month" name="month" value="' + i.month + '" required></label>' +
+          '<label>金額 (NT$)<input type="number" name="amount" value="' + i.amount + '" min="0" step="1" required></label>' +
+          '<label>備註（選填）<input type="text" name="note" value="' + escapeHtml(i.note || '') + '" placeholder="選填"></label>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn secondary" data-close>取消</button>' +
+            '<button type="button" class="btn primary" id="modal-submit-btn">儲存</button>' +
+          '</div>' +
+        '</form>';
+      openModal('編輯收入紀錄', editHtml, function(){
+        bindPickerEvents();
+        document.getElementById('modal-submit-btn').addEventListener('click', function(e){
+          e.preventDefault();
+          var fd = new FormData(document.getElementById('income-form'));
+          var month = fd.get('month');
+          if(!month){ showToast('請選擇月份', 'error'); return; }
+          var itemType = readPickerValue('incomeType');
+          if(!itemType){ showToast('請選擇項目（如清單是空的，請先到「清單設定」新增）', 'error'); return; }
+          upsertIncomeItem({
+            id: existing.id,
+            month: month,
+            itemType: itemType,
+            payee: readPickerValue('incomePayee'),
+            amount: Number(fd.get('amount')) || 0,
+            note: String(fd.get('note') || '').trim()
+          });
+          closeModal();
+          renderCurrentPage();
+          showToast('已儲存收入紀錄');
+        });
+      });
+      return;
+    }
+
+    // 新增：一次列出清單裡所有項目的金額欄位，跟舊版一樣可以同時填好幾項，只填有收到的就好
+    var typeList = state.pickLists.incomeType || [];
+    var fieldsHtml = typeList.length === 0
+      ? '<p class="field-note">尚未建立任何「項目」選項，請先到「清單設定」新增。</p>'
+      : typeList.map(function(t, idx){
+          return '<label>' + escapeHtml(t) + ' (NT$)<input type="number" class="income-type-amount" data-type="' + escapeHtml(t) + '" min="0" step="1" placeholder="留空 = 不新增這筆"></label>';
+        }).join('');
+    var addHtml =
+      '<form id="income-form">' +
+        '<p class="form-hint">只填有收到的項目金額就好，留空的項目不會新增紀錄；可以一次填好幾項，會各自變成一筆獨立的收入紀錄。</p>' +
+        '<label>月份<input type="month" name="month" value="' + selectedMonth + '" required></label>' +
+        fieldsHtml +
+        pickerFieldHtml('incomePayee', '', false) +
+        '<label>備註（選填）<input type="text" name="note" value="" placeholder="選填，套用到這次新增的每一筆"></label>' +
+        '<div class="modal-actions">' +
+          '<button type="button" class="btn secondary" data-close>取消</button>' +
+          '<button type="button" class="btn primary" id="modal-submit-btn">儲存</button>' +
+        '</div>' +
+      '</form>';
+    openModal('新增收入紀錄', addHtml, function(){
+      bindPickerEvents();
+      document.getElementById('modal-submit-btn').addEventListener('click', function(e){
+        e.preventDefault();
+        var fd = new FormData(document.getElementById('income-form'));
+        var month = fd.get('month');
+        if(!month){ showToast('請選擇月份', 'error'); return; }
+        var payee = readPickerValue('incomePayee');
+        var note = String(fd.get('note') || '').trim();
+        var amountInputs = document.querySelectorAll('#income-form .income-type-amount');
+        var addedCount = 0;
+        amountInputs.forEach(function(input){
+          var val = input.value;
+          if(val === '' || val == null) return;
+          var amount = Number(val) || 0;
+          if(amount <= 0) return;
+          upsertIncomeItem({
+            month: month,
+            itemType: input.dataset.type,
+            payee: payee,
+            amount: amount,
+            note: note
+          });
+          addedCount++;
+        });
+        if(addedCount === 0){ showToast('請至少填寫一個項目的金額', 'error'); return; }
+        closeModal();
+        renderCurrentPage();
+        showToast('已新增 ' + addedCount + ' 筆收入紀錄');
+      });
+    });
+  }
+
+  /* ============ Fixed / Variable Expenses pages ============ */
+
+  function tabOf(cat){ return cat === 'fixed' ? fixedTab : variableTab; }
+
+  function renderExpensePage(cat){
+    var tab = tabOf(cat);
+    document.querySelectorAll('[data-tab][data-cat="' + cat + '"]').forEach(function(b){
+      b.classList.toggle('active', b.dataset.tab === tab);
+    });
+    document.getElementById(cat + '-tab-month').style.display = tab === 'month' ? '' : 'none';
+    document.getElementById(cat + '-tab-manage').style.display = tab === 'manage' ? '' : 'none';
+    var listsEl = document.getElementById(cat + '-tab-lists');
+    if(listsEl) listsEl.style.display = tab === 'lists' ? '' : 'none';
+    var addBtn = document.getElementById('btn-add-' + cat);
+    if(addBtn) addBtn.style.display = tab === 'manage' ? '' : 'none';
+    if(cat === 'fixed'){
+      if(tab === 'month') renderFixedMonthTab();
+      else if(tab === 'manage') renderFixedManageTab();
+      else renderFixedListsTab();
+    } else {
+      if(tab === 'month') renderVariableMonthTab();
+      else if(tab === 'manage') renderVariableManageTab();
+      else renderVariableListsTab();
+    }
+  }
+
+  /* ---- Fixed expenses: due-cycle + progress bar ---- */
+  function renderFixedMonthTab(){
+    document.getElementById('fixed-month-heading').textContent = formatMonthLabel(selectedMonth) + ' 支出狀態';
+
+    var searchEl = document.getElementById('fixed-search');
+    var filterEl = document.getElementById('fixed-status-filter');
+    var search = searchEl ? searchEl.value.trim().toLowerCase() : '';
+    var filter = filterEl ? filterEl.value : 'all';
+
+    var container = document.getElementById('fixed-month-list');
+    var catItems = state.expenseItems.filter(function(it){ return it.category === 'fixed'; });
+    if(catItems.length === 0){
+      container.innerHTML = '<div class="empty-hint">尚未建立任何固定支出款項，請先點擊右上角「新增款項」。</div>';
+      return;
+    }
+
+    var items = catItems.slice();
+    if(search) items = items.filter(function(it){ return it.name.toLowerCase().indexOf(search) !== -1; });
+    items = items.filter(function(it){
+      var paidDue = isDueInMonth(it, selectedMonth);
+      var savedDue = true; // 固定支出每月都提醒存款
+      var rec = getRecord(it.id, selectedMonth) || { paid:false, saved:false };
+      switch(filter){
+        case 'incomplete': return (paidDue && !rec.paid) || (savedDue && !rec.saved);
+        case 'paid_pending': return paidDue && !rec.paid;
+        case 'saved_pending': return savedDue && !rec.saved;
+        case 'complete': return (paidDue || savedDue) && (!paidDue || rec.paid) && (!savedDue || rec.saved);
+        default: return true;
+      }
+    });
+
+    if(items.length === 0){
+      container.innerHTML = '<div class="empty-hint">沒有符合條件的款項。</div>';
+      return;
+    }
+
+    container.innerHTML = items.map(function(it){
+      var paidDue = isDueInMonth(it, selectedMonth);
+      var savedDue = true; // 固定支出每月都提醒存款
+      var rec = getRecord(it.id, selectedMonth) || { paid:false, paidDate:'', saved:false, savedAmount:0 };
+      var budget = monthlyBudgetOf(it);
+      var freqInfo = frequencyInfo(it);
+      var cyc = cycleFor(it, selectedMonth);
+      var cum = cycleSaved(it, selectedMonth);
+      var target = Number(it.amount) || 0;
+      var pct = target > 0 ? Math.min(100, Math.round(cum / target * 100)) : 0;
+      var savedVal = rec.savedAmount ? rec.savedAmount : budget;
+      var tagHtml = it.tag ? '<span class="badge badge-tag">' + escapeHtml(it.tag) + '</span>' : '';
+      var extraMeta = [];
+      if(it.payee) extraMeta.push('對象：' + escapeHtml(it.payee));
+      if(it.paymentMethod) extraMeta.push('繳費方式：' + escapeHtml(it.paymentMethod));
+      var extraMetaHtml = extraMeta.length ? ('　·　' + extraMeta.join('　·　')) : '';
+
+      var controlsHtml = '<div class="expense-item-controls">';
+      if(paidDue){
+        controlsHtml +=
+          '<label class="check-field ' + (rec.paid ? 'done' : 'pending') + '">' +
+            '<input type="checkbox" data-field="paid" data-item="' + it.id + '" ' + (rec.paid ? 'checked' : '') + '> 已繳費' +
+          '</label>' +
+          '<input type="date" class="mini-input" data-field="paidDate" data-item="' + it.id + '" value="' + (rec.paidDate || '') + '" ' + (rec.paid ? '' : 'disabled') + '>';
+      } else {
+        controlsHtml += '<span class="badge badge-notdue">非繳費月份</span>';
+      }
+      if(savedDue){
+        controlsHtml +=
+          '<label class="check-field ' + (rec.saved ? 'done' : 'pending') + '">' +
+            '<input type="checkbox" data-field="saved" data-item="' + it.id + '" ' + (rec.saved ? 'checked' : '') + '> 已存款' +
+          '</label>' +
+          '<input type="number" class="mini-input" data-field="savedAmount" data-item="' + it.id + '" min="0" step="1" value="' + savedVal + '">';
+      }
+      controlsHtml += '</div>';
+
+      var cardClass = (!paidDue && !savedDue) ? ' not-due' : '';
+
+      return (
+        '<div class="expense-item-card' + cardClass + '">' +
+          '<div class="expense-item-head">' +
+            '<div class="expense-item-name">' + escapeHtml(it.name) + tagHtml + '</div>' +
+            '<div class="expense-item-meta">' + freqInfo.label + ' NT$ ' + formatMoney(it.amount) + '　·　月預算 NT$ ' + formatMoney(budget) + '　·　下次繳費：' + formatMonthLabel(cyc.nextPaymentMonth) + extraMetaHtml + '</div>' +
+          '</div>' +
+          '<div class="expense-item-progress">' +
+            '<div class="progress-track"><div class="progress-fill" style="width:' + pct + '%"></div></div>' +
+            '<span class="progress-label">本期（' + formatMonthLabel(cyc.startMonth) + '～' + formatMonthLabel(cyc.nextPaymentMonth) + '）已存 NT$ ' + formatMoney(cum) + ' / NT$ ' + formatMoney(target) + '（' + pct + '%）</span>' +
+          '</div>' +
+          controlsHtml +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function groupItemsByTag(items){
+    var groups = {};
+    var groupOrder = [];
+    items.forEach(function(it){
+      var key = it.tag || '未分類';
+      if(!groups[key]){ groups[key] = []; groupOrder.push(key); }
+      groups[key].push(it);
+    });
+    var catOrder = state.pickLists.category || [];
+    groupOrder.sort(function(a, b){
+      if(a === '未分類') return 1;
+      if(b === '未分類') return -1;
+      var ia = catOrder.indexOf(a); if(ia === -1) ia = 999;
+      var ib = catOrder.indexOf(b); if(ib === -1) ib = 999;
+      if(ia !== ib) return ia - ib;
+      return a.localeCompare(b);
+    });
+    return { groups: groups, order: groupOrder };
+  }
+
+  function renderFixedManageTab(){
+    var wrap = document.getElementById('fixed-manage-wrap');
+    var catItems = state.expenseItems.filter(function(it){ return it.category === 'fixed'; });
+    if(catItems.length === 0){
+      wrap.innerHTML = '<div class="empty-hint">尚無款項，點擊右上角「新增款項」開始建立。</div>';
+      return;
+    }
+
+    var grouped = groupItemsByTag(catItems);
+    var groups = grouped.groups, groupOrder = grouped.order;
+
+    wrap.innerHTML = groupOrder.map(function(key){
+      var items = groups[key];
+      var rows = items.map(function(it){
+        return '<tr>' +
+          '<td data-label="款項名稱"><strong>' + escapeHtml(it.name) + '</strong></td>' +
+          '<td data-label="對象">' + (it.payee ? escapeHtml(it.payee) : '—') + '</td>' +
+          '<td data-label="繳費方式">' + (it.paymentMethod ? escapeHtml(it.paymentMethod) : '—') + '</td>' +
+          '<td data-label="金額">NT$ ' + formatMoney(it.amount) + '</td>' +
+          '<td data-label="繳費週期">' + frequencyInfo(it).label + '</td>' +
+          '<td data-label="月預算">NT$ ' + formatMoney(monthlyBudgetOf(it)) + '</td>' +
+          '<td data-label="繳費月份">' + formatPaymentMonths(it.paymentMonths) + '</td>' +
+          '<td data-label="備註">' + escapeHtml(it.note || '—') + '</td>' +
+          '<td data-label="操作">' +
+            '<button class="btn-icon" data-edit-item="' + it.id + '" title="編輯">✎</button>' +
+            '<button class="btn-icon danger" data-del-item="' + it.id + '" title="刪除">🗑</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return (
+        '<div class="section-title">' + escapeHtml(key) + '（' + items.length + '）</div>' +
+        '<div class="table-wrap" style="margin-bottom:18px;"><table class="data-table"><thead><tr>' +
+          '<th>款項名稱</th><th>對象</th><th>繳費方式</th><th>金額</th><th>繳費週期（自動）</th><th>月預算（自動）</th><th>繳費月份</th><th>備註</th><th>操作</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table></div>'
+      );
+    }).join('');
+  }
+
+  function renderPickListsInto(wrapId, keys){
+    var wrap = document.getElementById(wrapId);
+    wrap.innerHTML = keys.map(function(key){
+      var list = state.pickLists[key] || [];
+      var label = PICK_LIST_LABELS[key];
+      var chips = list.length === 0
+        ? '<span class="vexp-empty">尚未新增任何' + label + '</span>'
+        : list.map(function(v){
+            return '<span class="list-chip">' + escapeHtml(v) +
+              '<button type="button" class="list-chip-del" data-del-list="' + key + '" data-list-value="' + escapeHtml(v) + '" title="刪除">✕</button>' +
+            '</span>';
+          }).join('');
+      return (
+        '<div class="backup-card">' +
+          '<h3>' + label + '</h3>' +
+          '<div class="list-chip-wrap">' + chips + '</div>' +
+          '<div class="vexp-add-row" style="margin-top:12px;">' +
+            '<input type="text" class="mini-input" style="flex:1;" placeholder="新增' + label + '" data-new-list="' + key + '">' +
+            '<button type="button" class="btn-icon vexp-add-btn" data-add-list="' + key + '" title="新增">＋</button>' +
+          '</div>' +
+        '</div>'
+      );
+    }).join('');
+  }
+  function renderFixedListsTab(){
+    renderPickListsInto('fixed-lists-wrap', ['category', 'itemName', 'payee', 'paymentMethod']);
+  }
+  function renderVariableListsTab(){
+    renderPickListsInto('variable-lists-wrap', ['category', 'variableName', 'payee', 'paymentMethod']);
+  }
+
+  /* ---- Variable expenses: running deposit/expense ledger, no reset ---- */
+  function renderVariableMonthTab(){
+    document.getElementById('variable-month-heading').textContent = formatMonthLabel(selectedMonth) + ' 支出狀態';
+
+    var searchEl = document.getElementById('variable-search');
+    var filterEl = document.getElementById('variable-tag-filter');
+    var search = searchEl ? searchEl.value.trim().toLowerCase() : '';
+    var modeFilter = filterEl ? filterEl.value : 'all';
+
+    var container = document.getElementById('variable-month-list');
+    var catItems = state.expenseItems.filter(function(it){ return it.category === 'variable'; });
+    if(catItems.length === 0){
+      container.innerHTML = '<div class="empty-hint">尚未建立任何變動支出款項，請先點擊右上角「新增款項」。</div>';
+      return;
+    }
+
+    var items = catItems.slice();
+    if(search) items = items.filter(function(it){ return it.name.toLowerCase().indexOf(search) !== -1; });
+    if(modeFilter !== 'all') items = items.filter(function(it){ return it.mode === modeFilter; });
+
+    if(items.length === 0){
+      container.innerHTML = '<div class="empty-hint">沒有符合條件的款項。</div>';
+      return;
+    }
+
+    container.innerHTML = items.map(function(it){
+      var balance = variablePoolBalance(it, selectedMonth);
+      var monthExpenses = variableMonthExpenses(it.id, selectedMonth);
+      var monthExpenseTotal = variableSpendingInMonth(it.id, selectedMonth);
+      var modeLabel = it.mode === 'replenish' ? '補' : '存';
+      var modeBadgeClass = it.mode === 'replenish' ? 'badge-blue' : 'badge-sage';
+      var tagHtml = it.tag ? '<span class="badge badge-tag">' + escapeHtml(it.tag) + '</span>' : '';
+      var extraMeta = [];
+      if(it.payee) extraMeta.push('對象：' + escapeHtml(it.payee));
+      if(it.paymentMethod) extraMeta.push('方式：' + escapeHtml(it.paymentMethod));
+      var extraMetaHtml = extraMeta.length ? ('<div class="expense-item-meta">' + extraMeta.join('　·　') + '</div>') : '';
+
+      var rec = getRecord(it.id, selectedMonth);
+      var suggested = suggestedContribution(it, selectedMonth);
+      var contribVal = (rec && rec.savedAmount) ? rec.savedAmount : suggested;
+      var actionLabel = it.mode === 'replenish' ? '已補入本月' : '已存入本月';
+      var sectionLabel = it.mode === 'replenish'
+        ? '本月補入（每月提醒，建議補到上限，打勾確認後才計入資金池）'
+        : '本月存入（固定額度，需自行打勾記錄，確認完成後才計入資金池）';
+      var metaLine = it.mode === 'replenish'
+        ? ('上限 <strong>NT$ ' + formatMoney(it.capAmount) + '</strong>　·　本月花費 <strong>NT$ ' + formatMoney(monthExpenseTotal) + '</strong>　·　建議本月補 <strong>NT$ ' + formatMoney(suggested) + '</strong>')
+        : ('每月固定存入 <strong>NT$ ' + formatMoney(it.monthlyAmount) + '</strong>　·　本月花費 <strong>NT$ ' + formatMoney(monthExpenseTotal) + '</strong>');
+
+      var poolSectionHtml =
+        '<div class="vexp-section-label">' + sectionLabel + '</div>' +
+        '<div class="pool-meta-row">' + metaLine + '</div>' +
+        '<div class="expense-item-controls">' +
+          '<label class="check-field ' + (rec && rec.saved ? 'done' : 'pending') + '">' +
+            '<input type="checkbox" data-field="saved" data-item="' + it.id + '" ' + (rec && rec.saved ? 'checked' : '') + '> ' + actionLabel +
+          '</label>' +
+          '<input type="number" class="mini-input" data-field="savedAmount" data-item="' + it.id + '" min="0" step="1" value="' + contribVal + '">' +
+        '</div>';
+
+      var expenseListHtml = monthExpenses.length === 0
+        ? '<div class="vexp-empty">本月尚無記帳</div>'
+        : monthExpenses.map(function(x){
+            return '<div class="vexp-row">' +
+              '<span class="vexp-note">' + escapeHtml(x.subItem || '（未命名品項）') + '</span>' +
+              '<span class="vexp-amount">NT$ ' + formatMoney(x.amount) + '</span>' +
+              (x.paymentMethod ? '<span class="vexp-date">' + escapeHtml(x.paymentMethod) + '</span>' : '') +
+              '<span class="vexp-date">' + escapeHtml(x.date || '') + '</span>' +
+              '<button type="button" class="vexp-del" data-del-expense="' + x.id + '" title="刪除">✕</button>' +
+            '</div>';
+          }).join('');
+
+      return (
+        '<div class="expense-item-card">' +
+          '<div class="expense-item-head">' +
+            '<div class="expense-item-name">' + escapeHtml(it.name) + ' <span class="badge ' + modeBadgeClass + '">' + modeLabel + '</span>' + tagHtml + '</div>' +
+            extraMetaHtml +
+          '</div>' +
+          '<div class="balance-row">資金池餘額<strong class="' + (balance >= 0 ? 'up' : 'down') + '">NT$ ' + formatMoney(balance) + '</strong></div>' +
+          poolSectionHtml +
+
+          '<div class="vexp-section-label">記帳（可重複新增，同品項自動加總）</div>' +
+          '<div class="vexp-add-row">' +
+            '<input type="text" class="mini-input vexp-note-input" placeholder="品項，例如：捷運月票" data-newexp-note data-item="' + it.id + '">' +
+            '<input type="number" class="mini-input" min="0" step="1" placeholder="金額" data-newexp-amount data-item="' + it.id + '">' +
+            '<select class="mini-input" data-newexp-method data-item="' + it.id + '">' + paymentMethodOptionsHtml() + '</select>' +
+            '<input type="date" class="mini-input" data-newexp-date data-item="' + it.id + '" value="' + todayStr() + '">' +
+            '<button type="button" class="btn-icon vexp-add-btn" data-add-expense="' + it.id + '" title="新增記帳">＋</button>' +
+          '</div>' +
+          '<div class="vexp-list">' + expenseListHtml + '</div>' +
+          (monthExpenses.length > 0 ? '<div class="vexp-total">本月花費小計 NT$ ' + formatMoney(monthExpenseTotal) + '</div>' : '') +
+        '</div>'
+      );
+    }).join('');
+  }
+
+  function renderVariableManageTab(){
+    var wrap = document.getElementById('variable-manage-wrap');
+    var catItems = state.expenseItems.filter(function(it){ return it.category === 'variable'; });
+    if(catItems.length === 0){
+      wrap.innerHTML = '<div class="empty-hint">尚無款項，點擊右上角「新增款項」開始建立。</div>';
+      return;
+    }
+
+    var grouped = groupItemsByTag(catItems);
+    var groups = grouped.groups, groupOrder = grouped.order;
+
+    wrap.innerHTML = groupOrder.map(function(key){
+      var items = groups[key];
+      var rows = items.map(function(it){
+        var balance = variablePoolBalance(it, selectedMonth);
+        var modeLabel = it.mode === 'replenish' ? '補' : '存';
+        var amountLabel = it.mode === 'replenish' ? ('上限 NT$ ' + formatMoney(it.capAmount)) : ('每月 NT$ ' + formatMoney(it.monthlyAmount));
+        return '<tr>' +
+          '<td data-label="款項名稱"><strong>' + escapeHtml(it.name) + '</strong></td>' +
+          '<td data-label="模式">' + modeLabel + '</td>' +
+          '<td data-label="固定存入/上限">' + amountLabel + '</td>' +
+          '<td data-label="對象">' + (it.payee ? escapeHtml(it.payee) : '—') + '</td>' +
+          '<td data-label="繳費方式">' + (it.paymentMethod ? escapeHtml(it.paymentMethod) : '—') + '</td>' +
+          '<td data-label="資金池餘額"><span class="diff ' + (balance >= 0 ? 'up' : 'down') + '">NT$ ' + formatMoney(balance) + '</span></td>' +
+          '<td data-label="備註">' + escapeHtml(it.note || '—') + '</td>' +
+          '<td data-label="操作">' +
+            '<button class="btn-icon" data-edit-item="' + it.id + '" title="編輯">✎</button>' +
+            '<button class="btn-icon danger" data-del-item="' + it.id + '" title="刪除">🗑</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return (
+        '<div class="section-title">' + escapeHtml(key) + '（' + items.length + '）</div>' +
+        '<div class="table-wrap" style="margin-bottom:18px;"><table class="data-table"><thead><tr>' +
+          '<th>款項名稱</th><th>模式</th><th>固定存入 / 上限</th><th>對象</th><th>繳費方式</th><th>資金池餘額</th><th>備註</th><th>操作</th>' +
+        '</tr></thead><tbody>' + rows + '</tbody></table></div>'
+      );
+    }).join('');
+  }
+
+  /* ---- Shared: month-picker grid + tag chip selector ---- */
+  function monthGridHtml(selected){
+    var out = '<div class="month-grid">';
+    for(var m = 1; m <= 12; m++){
+      var checked = selected.indexOf(m) !== -1 ? 'checked' : '';
+      out += '<label class="month-chip"><input type="checkbox" name="months" value="' + m + '" ' + checked + '>' + m + '</label>';
+    }
+    out += '</div>';
+    return out;
+  }
+
+  /* ---- 固定支出專用：下拉可選清單欄位（分類／款項名稱／對象／繳費方式）---- */
+  // 記帳用的付款方式下拉選單，內容跟清單設定的「繳費方式」共用同一份清單
+  function paymentMethodOptionsHtml(){
+    var list = state.pickLists.paymentMethod || [];
+    var opts = '<option value="">付款方式</option>';
+    list.forEach(function(v){
+      opts += '<option value="' + escapeHtml(v) + '">' + escapeHtml(v) + '</option>';
+    });
+    return opts;
+  }
+
+  function pickerFieldHtml(listKey, currentValue, required){
+    var list = (state.pickLists[listKey] || []).slice();
+    if(currentValue && list.indexOf(currentValue) === -1) list.push(currentValue);
+    var label = PICK_LIST_LABELS[listKey];
+    var out = '<div class="field-block">' + label + (required ? '' : '（選填）');
+    if(list.length === 0){
+      out += '<p class="field-note">尚未建立任何「' + label + '」選項，請先到「清單設定」新增。</p>';
+    } else {
+      out += '<div class="category-chips" data-chip-group="' + listKey + '">';
+      if(!required){
+        out += '<label class="check-field ' + (!currentValue ? 'done' : '') + '"><input type="radio" name="picker-' + listKey + '" value="" ' + (!currentValue ? 'checked' : '') + '>未選擇</label>';
+      }
+      list.forEach(function(v){
+        var isChecked = v === currentValue;
+        out += '<label class="check-field ' + (isChecked ? 'done' : '') + '"><input type="radio" name="picker-' + listKey + '" value="' + escapeHtml(v) + '" ' + (isChecked ? 'checked' : '') + '>' + escapeHtml(v) + '</label>';
+      });
+      out += '</div>';
+    }
+    out += '</div>';
+    return out;
+  }
+  function bindPickerEvents(){
+    document.querySelectorAll('#modal-body [data-chip-group]').forEach(function(group){
+      group.querySelectorAll('input[type="radio"]').forEach(function(r){
+        r.addEventListener('change', function(){
+          group.querySelectorAll('.check-field').forEach(function(lbl){
+            lbl.classList.toggle('done', lbl.querySelector('input').checked);
+          });
+        });
+      });
+    });
+  }
+  function readPickerValue(listKey){
+    var checked = document.querySelector('#modal-body input[name="picker-' + listKey + '"]:checked');
+    return checked ? (checked.value || '') : '';
+  }
+
+  function openExpenseItemModal(cat, existing){
+    var isEdit = !!existing;
+    if(cat === 'fixed'){
+      var it = existing || { name:'', amount:'', paymentMonths:[], note:'', tag:'', payee:'', paymentMethod:'' };
+      var html =
+        '<form id="item-form">' +
+          pickerFieldHtml('category', it.tag || '', false) +
+          pickerFieldHtml('itemName', it.name || '', true) +
+          pickerFieldHtml('payee', it.payee || '', false) +
+          '<label>金額 (NT$)<input type="number" name="amount" value="' + it.amount + '" min="0" step="1" required></label>' +
+          pickerFieldHtml('paymentMethod', it.paymentMethod || '', false) +
+          '<div class="field-block">繳費月份（可複選，留空代表每月）' + monthGridHtml(it.paymentMonths || []) +
+            '<p class="field-note">系統會依勾選的月份數量與間隔，自動判斷是年繳、季繳、雙月繳或月繳，並以每次繳費金額作為存款進度目標。</p>' +
+            '<p class="field-note">此為實際「繳費」的月份；「存款」每個月都會提醒，以便提前存夠款項。</p>' +
+          '</div>' +
+          '<label>備註（選填）<input type="text" name="note" value="' + escapeHtml(it.note || '') + '" placeholder="例如：每年3月繳費"></label>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn secondary" data-close>取消</button>' +
+            '<button type="button" class="btn primary" id="modal-submit-btn">儲存</button>' +
+          '</div>' +
+        '</form>';
+      openModal(isEdit ? '編輯款項' : '新增固定支出款項', html, function(){
+        bindPickerEvents();
+        document.getElementById('modal-submit-btn').addEventListener('click', function(e){
+          e.preventDefault();
+          var fd = new FormData(document.getElementById('item-form'));
+          var name = readPickerValue('itemName');
+          if(!name){ showToast('請選擇款項名稱（如清單是空的，請先到「清單設定」新增）', 'error'); return; }
+          var paymentMonths = fd.getAll('months').map(function(v){ return parseInt(v, 10); });
+          var data = {
+            category: 'fixed',
+            name: name,
+            amount: Number(fd.get('amount')) || 0,
+            paymentMonths: paymentMonths,
+            tag: readPickerValue('category'),
+            payee: readPickerValue('payee'),
+            paymentMethod: readPickerValue('paymentMethod'),
+            note: String(fd.get('note') || '').trim()
+          };
+          if(isEdit) data.id = existing.id;
+          upsertExpenseItem(data);
+          closeModal();
+          renderCurrentPage();
+          showToast('已儲存款項');
+        });
+      });
+    } else {
+      var vit = existing || { name:'', note:'', mode:'save', monthlyAmount:'', capAmount:'', tag:'', payee:'', paymentMethod:'' };
+      var modeChipsHtml =
+        '<div class="field-block">模式（建立後仍可修改，但會影響資金池計算）' +
+          '<div class="category-chips" data-chip-group="mode">' +
+            '<label class="check-field ' + (vit.mode !== 'replenish' ? 'done' : '') + '"><input type="radio" name="picker-mode" value="save" ' + (vit.mode !== 'replenish' ? 'checked' : '') + '>存（每月固定存入）</label>' +
+            '<label class="check-field ' + (vit.mode === 'replenish' ? 'done' : '') + '"><input type="radio" name="picker-mode" value="replenish" ' + (vit.mode === 'replenish' ? 'checked' : '') + '>補（設上限，補到滿）</label>' +
+          '</div>' +
+        '</div>';
+      var saveAmountHtml = '<label id="mode-save-field"><span id="mode-save-label">每月固定存入額度 (NT$)</span><input type="number" name="monthlyAmount" value="' + vit.monthlyAmount + '" min="0" step="1" placeholder="例如：5000"></label>';
+      var capAmountHtml = '<label id="mode-replenish-field" style="display:none;"><span>上限額度 (NT$)</span><input type="number" name="capAmount" value="' + vit.capAmount + '" min="0" step="1" placeholder="例如：5000"></label>';
+      var vhtml =
+        '<form id="item-form">' +
+          pickerFieldHtml('category', vit.tag || '', false) +
+          pickerFieldHtml('variableName', vit.name || '', true) +
+          pickerFieldHtml('payee', vit.payee || '', false) +
+          modeChipsHtml +
+          saveAmountHtml +
+          capAmountHtml +
+          pickerFieldHtml('paymentMethod', vit.paymentMethod || '', false) +
+          '<label>備註（選填）<input type="text" name="note" value="' + escapeHtml(vit.note || '') + '" placeholder="選填"></label>' +
+          '<p class="field-note">存模式：每月固定存入設定的額度，資金池 = 上月餘額 − 本月花費 + 本月存入（記帳當下就會立即反映）。<br>補模式：設定上限，系統依上月結餘建議這個月要補多少，實際補入金額每月仍可調整。<br>記帳可在同一個月不限次數新增，同品項會自動加總。</p>' +
+          '<div class="modal-actions">' +
+            '<button type="button" class="btn secondary" data-close>取消</button>' +
+            '<button type="button" class="btn primary" id="modal-submit-btn">儲存</button>' +
+          '</div>' +
+        '</form>';
+      openModal(isEdit ? '編輯款項' : '新增變動支出款項', vhtml, function(){
+        bindPickerEvents();
+        function syncModeFields(){
+          var isReplenish = document.querySelector('#item-form input[name="picker-mode"]:checked').value === 'replenish';
+          document.getElementById('mode-save-field').style.display = isReplenish ? 'none' : '';
+          document.getElementById('mode-replenish-field').style.display = isReplenish ? '' : 'none';
+        }
+        document.querySelectorAll('#item-form input[name="picker-mode"]').forEach(function(r){
+          r.addEventListener('change', syncModeFields);
+        });
+        syncModeFields();
+        document.getElementById('modal-submit-btn').addEventListener('click', function(e){
+          e.preventDefault();
+          var fd = new FormData(document.getElementById('item-form'));
+          var name = readPickerValue('variableName');
+          if(!name){ showToast('請選擇款項名稱（如清單是空的，請先到「清單設定」新增）', 'error'); return; }
+          var modeChecked = document.querySelector('#item-form input[name="picker-mode"]:checked');
+          var mode = modeChecked ? modeChecked.value : 'save';
+          var data = {
+            category: 'variable',
+            name: name,
+            mode: mode,
+            monthlyAmount: Number(fd.get('monthlyAmount')) || 0,
+            capAmount: Number(fd.get('capAmount')) || 0,
+            tag: readPickerValue('category'),
+            payee: readPickerValue('payee'),
+            paymentMethod: readPickerValue('paymentMethod'),
+            note: String(fd.get('note') || '').trim()
+          };
+          if(isEdit) data.id = existing.id;
+          else data.createdMonth = currentMonthStr();
+          upsertExpenseItem(data);
+          closeModal();
+          renderCurrentPage();
+          showToast('已儲存款項');
+        });
+      });
+    }
+  }
+
+  /* ============ Backup page ============ */
+  function renderBackupPage(){
+    document.getElementById('backup-stats').innerHTML =
+      '<div>資產紀錄：' + state.assets.length + ' 筆</div>' +
+      '<div>收入紀錄：' + state.incomeItems.length + ' 筆</div>' +
+      '<div>支出款項：' + state.expenseItems.length + ' 筆</div>' +
+      '<div>支出每月紀錄：' + state.expenseRecords.length + ' 筆</div>' +
+      '<div>變動支出明細：' + state.variableExpenses.length + ' 筆</div>';
+  }
+
+  function exportData(){
+    var blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+    var url = URL.createObjectURL(blob);
+    var d = new Date();
+    var stamp = d.getFullYear() + String(d.getMonth()+1).padStart(2,'0') + String(d.getDate()).padStart(2,'0');
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = '家庭理財備份_' + stamp + '.json';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('已匯出備份檔');
+  }
+
+  function importDataFile(file){
+    var reader = new FileReader();
+    reader.onload = function(e){
+      var parsed;
+      try{
+        parsed = JSON.parse(e.target.result);
+        if(!parsed || typeof parsed !== 'object') throw new Error('格式錯誤');
+      }catch(err){
+        showToast('檔案格式錯誤，匯入失敗', 'error');
+        return;
+      }
+      confirmAction('匯入將會覆蓋目前所有資料，確定要繼續嗎？', function(){
+        var base = defaultState();
+        var pl = parsed.pickLists || {};
+        state = {
+          assets: Array.isArray(parsed.assets) ? parsed.assets : base.assets,
+          incomes: Array.isArray(parsed.incomes) ? parsed.incomes : base.incomes,
+          incomeItems: Array.isArray(parsed.incomeItems) ? parsed.incomeItems : base.incomeItems,
+          expenseItems: Array.isArray(parsed.expenseItems) ? parsed.expenseItems : base.expenseItems,
+          expenseRecords: Array.isArray(parsed.expenseRecords) ? parsed.expenseRecords : base.expenseRecords,
+          variableExpenses: Array.isArray(parsed.variableExpenses) ? parsed.variableExpenses : base.variableExpenses,
+          pickLists: {
+            category: Array.isArray(pl.category) ? pl.category : base.pickLists.category,
+            itemName: Array.isArray(pl.itemName) ? pl.itemName : base.pickLists.itemName,
+            payee: Array.isArray(pl.payee) ? pl.payee : base.pickLists.payee,
+            paymentMethod: Array.isArray(pl.paymentMethod) ? pl.paymentMethod : base.pickLists.paymentMethod,
+            variableName: Array.isArray(pl.variableName) ? pl.variableName : base.pickLists.variableName,
+            incomeType: Array.isArray(pl.incomeType) ? pl.incomeType : base.pickLists.incomeType,
+            incomePayee: Array.isArray(pl.incomePayee) ? pl.incomePayee : base.pickLists.incomePayee
+          }
+        };
+        normalizeExpenseItems();
+        normalizeIncome();
+        saveState();
+        renderCurrentPage();
+        showToast('匯入成功');
+      });
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+
+  function clearAllData(){
+    confirmAction('確定要清除所有資料嗎？此動作無法復原！', function(){
+      confirmAction('再次確認：真的要清除全部資料嗎？', function(){
+        state = defaultState();
+        saveState();
+        renderCurrentPage();
+        showToast('已清除所有資料');
+      });
+    });
+  }
+
+  /* ============ Modal ============ */
+  function openModal(title, bodyHtml, onMount){
+    document.getElementById('modal-title').textContent = title;
+    document.getElementById('modal-body').innerHTML = bodyHtml;
+    document.getElementById('modal-overlay').classList.add('show');
+    if(onMount) onMount();
+  }
+  function closeModal(){
+    document.getElementById('modal-overlay').classList.remove('show');
+    document.getElementById('modal-body').innerHTML = '';
+  }
+
+  // 自製的確認視窗，取代瀏覽器原生 confirm()（在部分環境下原生 confirm 可能沒有反應）
+  function confirmAction(message, onConfirm){
+    var html =
+      '<p style="font-size:14px;color:var(--dark);line-height:1.7;margin:0 0 20px;">' + escapeHtml(message) + '</p>' +
+      '<div class="modal-actions">' +
+        '<button type="button" class="btn secondary" data-close>取消</button>' +
+        '<button type="button" class="btn primary" id="confirm-action-yes">確定</button>' +
+      '</div>';
+    openModal('請確認', html, function(){
+      document.getElementById('confirm-action-yes').addEventListener('click', function(){
+        closeModal();
+        onConfirm();
+      });
+    });
+  }
+
+  /* ============ Toast ============ */
+  var toastTimer = null;
+  function showToast(msg, type){
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.className = 'show' + (type === 'error' ? ' error' : type === 'info' ? ' info' : '');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ el.classList.remove('show'); }, 2400);
+  }
+
+  /* ============ Event delegation ============ */
+  document.addEventListener('click', function(e){
+    var t;
+
+    if((t = e.target.closest('[data-nav]'))){ showPage(t.dataset.nav); return; }
+    if((t = e.target.closest('[data-tab]'))){ setExpenseTab(t.dataset.cat, t.dataset.tab); return; }
+    if((t = e.target.closest('[data-close]'))){ closeModal(); return; }
+    if(e.target.id === 'modal-overlay'){ closeModal(); return; }
+
+    if((t = e.target.closest('[data-edit-asset]'))){
+      var a = state.assets.find(function(x){ return x.id === t.dataset.editAsset; });
+      openAssetModal(a); return;
+    }
+    if((t = e.target.closest('[data-del-asset]'))){
+      confirmAction('確定要刪除這筆資產紀錄嗎？', function(){ deleteAsset(t.dataset.delAsset); renderCurrentPage(); showToast('已刪除'); });
+      return;
+    }
+    if((t = e.target.closest('[data-edit-income]'))){
+      var inc = state.incomeItems.find(function(x){ return x.id === t.dataset.editIncome; });
+      openIncomeModal(inc); return;
+    }
+    if((t = e.target.closest('[data-del-income]'))){
+      confirmAction('確定要刪除這筆收入紀錄嗎？', function(){ deleteIncomeItem(t.dataset.delIncome); renderCurrentPage(); showToast('已刪除'); });
+      return;
+    }
+    if((t = e.target.closest('[data-edit-item]'))){
+      var it = state.expenseItems.find(function(x){ return x.id === t.dataset.editItem; });
+      if(it) openExpenseItemModal(it.category, it);
+      return;
+    }
+    if((t = e.target.closest('[data-del-item]'))){
+      confirmAction('確定要刪除此款項嗎？相關的每月紀錄也會一併刪除。', function(){ deleteExpenseItem(t.dataset.delItem); renderCurrentPage(); showToast('已刪除'); });
+      return;
+    }
+    if((t = e.target.closest('[data-goto-item]'))){
+      var cat = t.dataset.gotoCat === 'variable' ? 'variable' : 'fixed';
+      showPage(cat); setExpenseTab(cat, 'month'); return;
+    }
+    if((t = e.target.closest('[data-add-expense]'))){
+      var addItemId = t.dataset.addExpense;
+      var amountInput = document.querySelector('input[data-newexp-amount][data-item="' + addItemId + '"]');
+      var noteInput = document.querySelector('input[data-newexp-note][data-item="' + addItemId + '"]');
+      var dateInput = document.querySelector('input[data-newexp-date][data-item="' + addItemId + '"]');
+      var methodInput = document.querySelector('select[data-newexp-method][data-item="' + addItemId + '"]');
+      var amount = amountInput ? (Number(amountInput.value) || 0) : 0;
+      var subItem = noteInput ? noteInput.value.trim() : '';
+      if(!subItem){ showToast('請輸入品項名稱', 'error'); return; }
+      if(amount <= 0){ showToast('請輸入大於 0 的花費金額', 'error'); return; }
+      upsertVariableExpense(addItemId, selectedMonth, subItem, amount, dateInput ? dateInput.value : todayStr(), methodInput ? methodInput.value : '');
+      if(amountInput) amountInput.value = '';
+      if(noteInput) noteInput.value = '';
+      renderVariableMonthTab();
+      return;
+    }
+    if((t = e.target.closest('[data-del-expense]'))){
+      confirmAction('確定要刪除這筆支出紀錄嗎？', function(){ deleteVariableExpense(t.dataset.delExpense); renderVariableMonthTab(); showToast('已刪除'); });
+      return;
+    }
+    if((t = e.target.closest('[data-add-list]'))){
+      var listKey = t.dataset.addList;
+      var card = t.closest('.backup-card');
+      var newListInput = card ? card.querySelector('input[data-new-list="' + listKey + '"]') : null;
+      var newVal = newListInput ? newListInput.value.trim() : '';
+      if(!newVal){ showToast('請輸入內容', 'error'); return; }
+      addPickListValue(listKey, newVal);
+      if(t.closest('#income-tab-lists')) renderIncomePage();
+      else if(t.closest('#variable-tab-lists')) renderVariableListsTab();
+      else renderFixedListsTab();
+      showToast('已新增至' + PICK_LIST_LABELS[listKey] + '清單');
+      return;
+    }
+    if((t = e.target.closest('[data-del-list]'))){
+      var delListKey = t.dataset.delList;
+      var delListVal = t.dataset.listValue;
+      var isIncomeListsPage = !!t.closest('#income-tab-lists');
+      var isVariableListsPage = !!t.closest('#variable-tab-lists');
+      confirmAction('確定要從清單刪除「' + delListVal + '」嗎？已使用這個值的款項不會被更動。', function(){
+        deletePickListValue(delListKey, delListVal);
+        if(isIncomeListsPage) renderIncomePage();
+        else if(isVariableListsPage) renderVariableListsTab();
+        else renderFixedListsTab();
+        showToast('已刪除');
+      });
+      return;
+    }
+    if(e.target.closest('#btn-add-asset')){ openAssetModal(null); return; }
+    if(e.target.closest('#btn-add-income')){ openIncomeModal(null); return; }
+    if(e.target.closest('#btn-add-fixed')){ openExpenseItemModal('fixed', null); return; }
+    if(e.target.closest('#btn-add-variable')){ openExpenseItemModal('variable', null); return; }
+    if(e.target.closest('#btn-this-month')){ setSelectedMonth(currentMonthStr()); return; }
+    if(e.target.closest('#btn-prev-month')){ setSelectedMonth(prevMonthStr(selectedMonth)); return; }
+    if(e.target.closest('#btn-next-month')){ setSelectedMonth(nextMonthStr(selectedMonth)); return; }
+    if(e.target.closest('#btn-export')){ exportData(); return; }
+    if(e.target.closest('#btn-import')){ document.getElementById('file-import').click(); return; }
+    if(e.target.closest('#btn-clear-all')){ clearAllData(); return; }
+  });
+
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Enter' && e.target.matches('input[data-newexp-amount], input[data-newexp-note]')){
+      e.preventDefault();
+      var itemId = e.target.dataset.item;
+      var btn = document.querySelector('[data-add-expense="' + itemId + '"]');
+      if(btn) btn.click();
+      return;
+    }
+    if(e.key === 'Enter' && e.target.matches('input[data-new-list]')){
+      e.preventDefault();
+      var listKey2 = e.target.dataset.newList;
+      var card2 = e.target.closest('.backup-card');
+      var addBtn = card2 ? card2.querySelector('[data-add-list="' + listKey2 + '"]') : null;
+      if(addBtn) addBtn.click();
+      return;
+    }
+    // 讓彈窗表單裡按 Enter 也能直接送出（因為儲存按鈕已改為 type=button，不會自動接手 Enter 鍵）
+    if(e.key === 'Enter' && e.target.closest('#item-form, #asset-form, #income-form') && e.target.tagName !== 'TEXTAREA'){
+      e.preventDefault();
+      var saveBtn = document.getElementById('modal-submit-btn');
+      if(saveBtn) saveBtn.click();
+    }
+  });
+
+  // 手機鍵盤彈出時，把目前聚焦的欄位捲動到可視範圍內，避免鍵盤把送出按鈕擋住
+  document.addEventListener('focusin', function(e){
+    if(!e.target.closest('#modal-body')) return;
+    setTimeout(function(){
+      try{ e.target.scrollIntoView({ block: 'center', behavior: 'smooth' }); }catch(_){}
+    }, 300);
+  });
+
+  document.addEventListener('input', function(e){
+    if(e.target.id === 'assets-search') renderAssetsPage();
+    if(e.target.id === 'income-search') renderIncomePage();
+    if(e.target.id === 'fixed-search') renderFixedMonthTab();
+    if(e.target.id === 'variable-search') renderVariableMonthTab();
+  });
+
+  document.addEventListener('change', function(e){
+    var t = e.target;
+
+    if(t.id === 'global-month-picker'){ setSelectedMonth(t.value); return; }
+    if(t.id === 'fixed-status-filter'){ renderFixedMonthTab(); return; }
+    if(t.id === 'variable-tag-filter'){ renderVariableMonthTab(); return; }
+    if(t.id === 'file-import'){
+      if(t.files && t.files[0]) importDataFile(t.files[0]);
+      t.value = '';
+      return;
+    }
+
+    if(t.dataset && t.dataset.item){
+      var itemId = t.dataset.item;
+      var field = t.dataset.field;
+      var srcItem = state.expenseItems.find(function(x){ return x.id === itemId; });
+      if(!srcItem) return;
+      var renderFn = srcItem.category === 'fixed' ? renderFixedMonthTab : renderVariableMonthTab;
+
+      if(field === 'paid'){
+        var existingRec = getRecord(itemId, selectedMonth);
+        var patch = { paid: t.checked };
+        if(t.checked){ patch.paidDate = (existingRec && existingRec.paidDate) ? existingRec.paidDate : todayStr(); }
+        else { patch.paidDate = ''; }
+        upsertRecord(itemId, selectedMonth, patch);
+        renderFn();
+      } else if(field === 'paidDate'){
+        upsertRecord(itemId, selectedMonth, { paidDate: t.value });
+      } else if(field === 'saved'){
+        var amtInput = document.querySelector('input[data-field="savedAmount"][data-item="' + itemId + '"]');
+        var amt = amtInput ? (Number(amtInput.value) || 0) : 0;
+        upsertRecord(itemId, selectedMonth, { saved: t.checked, savedAmount: amt });
+        renderFn();
+      } else if(field === 'savedAmount'){
+        var rec2 = getRecord(itemId, selectedMonth);
+        upsertRecord(itemId, selectedMonth, { savedAmount: Number(t.value) || 0 });
+        if(rec2 && rec2.saved) renderFn();
+      }
+    }
+  });
+
+  /* ============ Init ============ */
+  function init(){
+    document.getElementById('global-month-picker').value = selectedMonth;
+    showPage('dashboard');
+  }
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>
