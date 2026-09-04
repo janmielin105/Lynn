@@ -308,6 +308,7 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
 .pool-meta-row{ font-size:12.5px; color:var(--medium); line-height:1.8; margin-bottom:10px; }
 .pool-meta-row strong{ color:var(--dark); }
 .field-note{ font-size:11.5px; color:var(--gray); font-weight:500; margin:8px 0 0; line-height:1.5; }
+.chip-with-del{ display:inline-flex; align-items:center; gap:2px; }
 
 /* ---------- Modal ---------- */
 #modal-overlay{
@@ -347,7 +348,7 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
   border-top:1px solid var(--light-blue);
 }
 
-/* ---------- Backup page ---------- */
+/* ---------- Settings / Backup page ---------- */
 .backup-card{
   background:#fff; border-radius:var(--radius); box-shadow:var(--shadow); padding:20px; margin-bottom:16px;
 }
@@ -355,6 +356,11 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
 .backup-card p{ color:var(--medium); font-size:13px; margin:0 0 14px; line-height:1.6; }
 #backup-stats div{ font-size:13.5px; color:var(--medium); padding:3px 0; }
 .backup-actions{ display:flex; gap:10px; flex-wrap:wrap; }
+.settings-input{
+  display:block; width:100%; margin-top:6px; padding:10px 12px; border:1px solid var(--soft-blue);
+  border-radius:9px; font-size:14px; color:var(--dark); background:#fff;
+}
+.settings-label{ display:block; font-size:13px; font-weight:700; color:var(--medium); margin-bottom:14px; }
 
 /* ---------- Toast ---------- */
 #toast{
@@ -390,7 +396,7 @@ window.addEventListener('unhandledrejection', function(e){
 </script>
 
 <header class="topbar">
-  <div class="topbar-title"><span class="dot"></span>家庭理財小幫手</div>
+  <div class="topbar-title"><span class="dot"></span><span id="app-title-text">家庭理財小幫手</span></div>
   <div class="topbar-month">
     <label for="global-month-picker">檢視月份</label>
     <button class="btn-icon month-nav-btn" id="btn-prev-month" title="上個月">‹</button>
@@ -402,24 +408,34 @@ window.addEventListener('unhandledrejection', function(e){
 
 <div class="layout">
   <nav class="sidenav">
-    <button class="nav-btn" data-nav="dashboard">儀表板</button>
+    <button class="nav-btn" data-nav="dashboard">首頁</button>
     <button class="nav-btn" data-nav="assets">總資產表</button>
     <button class="nav-btn" data-nav="income">總收入表</button>
     <button class="nav-btn" data-nav="fixed">固定支出</button>
     <button class="nav-btn" data-nav="variable">變動支出</button>
-    <button class="nav-btn" data-nav="backup">備份設定</button>
+    <button class="nav-btn" data-nav="backup">設定</button>
   </nav>
 
   <main>
-    <!-- Dashboard -->
+    <!-- Dashboard / Home -->
     <section id="page-dashboard" class="page">
       <div class="page-header">
         <div>
-          <h1>儀表板</h1>
+          <h1>首頁</h1>
           <div class="page-sub">掌握本月資產、收入與待辦款項</div>
         </div>
       </div>
       <div id="dashboard-cards" class="card-grid"></div>
+
+      <div class="section-title">固定支出（依分類，月預算）</div>
+      <div id="dashboard-fixed-by-tag" class="card-grid"></div>
+
+      <div class="section-title">變動支出（依分類，本月花費）</div>
+      <div id="dashboard-variable-by-tag" class="card-grid"></div>
+
+      <div class="section-title">資產（依對象）</div>
+      <div id="dashboard-asset-by-payee" class="card-grid"></div>
+
       <div class="section-title">本月待辦提醒</div>
       <div id="dashboard-alert-list" class="alert-list"></div>
     </section>
@@ -429,14 +445,14 @@ window.addEventListener('unhandledrejection', function(e){
       <div class="page-header">
         <div>
           <h1>總資產表</h1>
-          <div class="page-sub">活存、定存、股票市值，每月一筆</div>
+          <div class="page-sub">依分類、對象記錄每月資產，每月一筆</div>
         </div>
         <button class="btn primary" id="btn-add-asset">＋ 新增紀錄</button>
       </div>
       <div class="toolbar">
         <input type="text" id="assets-search" placeholder="搜尋月份，例如 2026 或 08">
       </div>
-      <div id="assets-table-wrap" class="table-wrap"></div>
+      <div id="assets-table-wrap"></div>
     </section>
 
     <!-- Income -->
@@ -448,22 +464,10 @@ window.addEventListener('unhandledrejection', function(e){
         </div>
         <button class="btn primary" id="btn-add-income">＋ 新增紀錄</button>
       </div>
-      <div class="tabbar">
-        <button class="tab-btn" data-tab="list" data-cat="income">收入紀錄</button>
-        <button class="tab-btn" data-tab="lists" data-cat="income">清單設定</button>
+      <div class="toolbar">
+        <input type="text" id="income-search" placeholder="搜尋月份，例如 2026 或 08">
       </div>
-
-      <div id="income-tab-list">
-        <div class="toolbar">
-          <input type="text" id="income-search" placeholder="搜尋月份，例如 2026 或 08">
-        </div>
-        <div id="income-table-wrap"></div>
-      </div>
-
-      <div id="income-tab-lists" style="display:none;">
-        <div class="page-sub" style="margin-bottom:14px;">管理「項目」「對象」清單，新增收入紀錄時可以直接從這裡挑選。</div>
-        <div id="income-lists-wrap"></div>
-      </div>
+      <div id="income-table-wrap"></div>
     </section>
 
     <!-- Fixed Expenses -->
@@ -478,7 +482,6 @@ window.addEventListener('unhandledrejection', function(e){
       <div class="tabbar">
         <button class="tab-btn" data-tab="month" data-cat="fixed">本月狀態</button>
         <button class="tab-btn" data-tab="manage" data-cat="fixed">款項管理</button>
-        <button class="tab-btn" data-tab="lists" data-cat="fixed">清單設定</button>
       </div>
 
       <div id="fixed-tab-month">
@@ -498,11 +501,6 @@ window.addEventListener('unhandledrejection', function(e){
       <div id="fixed-tab-manage" style="display:none;">
         <div id="fixed-manage-wrap"></div>
       </div>
-
-      <div id="fixed-tab-lists" style="display:none;">
-        <div class="page-sub" style="margin-bottom:14px;">管理「分類」「款項名稱」「對象」「繳費方式」這幾份清單，新增款項時可以直接從這裡挑選。</div>
-        <div id="fixed-lists-wrap"></div>
-      </div>
     </section>
 
     <!-- Variable Expenses -->
@@ -517,7 +515,6 @@ window.addEventListener('unhandledrejection', function(e){
       <div class="tabbar">
         <button class="tab-btn" data-tab="month" data-cat="variable">本月狀態</button>
         <button class="tab-btn" data-tab="manage" data-cat="variable">款項管理</button>
-        <button class="tab-btn" data-tab="lists" data-cat="variable">清單設定</button>
       </div>
 
       <div id="variable-tab-month">
@@ -535,39 +532,43 @@ window.addEventListener('unhandledrejection', function(e){
       <div id="variable-tab-manage" style="display:none;">
         <div id="variable-manage-wrap"></div>
       </div>
-
-      <div id="variable-tab-lists" style="display:none;">
-        <div class="page-sub" style="margin-bottom:14px;">管理「款項名稱」清單，新增款項時可以直接從這裡挑選。</div>
-        <div id="variable-lists-wrap"></div>
-      </div>
     </section>
 
-    <!-- Backup -->
+    <!-- Settings -->
     <section id="page-backup" class="page">
       <div class="page-header">
         <div>
-          <h1>備份設定</h1>
-          <div class="page-sub">資料儲存在此瀏覽器內，建議定期匯出備份</div>
+          <h1>設定</h1>
+          <div class="page-sub">個人資訊、常用清單與備份管理</div>
         </div>
       </div>
 
       <div class="backup-card">
-        <h3>目前資料量</h3>
-        <div id="backup-stats"></div>
+        <h3>個人資訊</h3>
+        <p>設定你的稱呼，首頁上方會用這個稱呼跟你打招呼。</p>
+        <label class="settings-label">稱呼
+          <input type="text" id="profile-nickname-input" class="settings-input" placeholder="例如：小美">
+        </label>
+        <div class="backup-actions">
+          <button class="btn primary" id="btn-save-profile">儲存稱呼</button>
+        </div>
       </div>
 
       <div class="backup-card">
-        <h3>匯出備份</h3>
-        <p>將所有資料下載為 JSON 檔案，可保存在雲端硬碟或傳送到其他裝置。</p>
+        <h3>使用說明</h3>
+        <p>忘記固定支出、變動支出怎麼記帳，或清單要怎麼新增？點下面看說明。</p>
+        <div class="backup-actions">
+          <button class="btn secondary" id="btn-open-guide">查看使用說明</button>
+        </div>
+      </div>
+
+      <div id="settings-lists-wrap"></div>
+
+      <div class="backup-card">
+        <h3>資料備份</h3>
+        <p>將所有資料下載為 JSON 檔案備份，或選擇備份檔還原資料。匯入將會覆蓋目前瀏覽器中的所有資料，請先確認。</p>
         <div class="backup-actions">
           <button class="btn primary" id="btn-export">匯出備份檔</button>
-        </div>
-      </div>
-
-      <div class="backup-card">
-        <h3>匯入備份</h3>
-        <p>選擇先前匯出的 JSON 檔案還原資料。匯入將會覆蓋目前瀏覽器中的所有資料，請先確認。</p>
-        <div class="backup-actions">
           <button class="btn secondary" id="btn-import">選擇檔案匯入</button>
           <input type="file" id="file-import" accept="application/json" style="display:none;">
         </div>
@@ -585,12 +586,12 @@ window.addEventListener('unhandledrejection', function(e){
 </div>
 
 <nav class="bottomnav">
-  <button class="nav-btn" data-nav="dashboard">儀表板</button>
+  <button class="nav-btn" data-nav="dashboard">首頁</button>
   <button class="nav-btn" data-nav="assets">資產</button>
   <button class="nav-btn" data-nav="income">收入</button>
   <button class="nav-btn" data-nav="fixed">固定</button>
   <button class="nav-btn" data-nav="variable">變動</button>
-  <button class="nav-btn" data-nav="backup">備份</button>
+  <button class="nav-btn" data-nav="backup">設定</button>
 </nav>
 
 <div id="modal-overlay">
@@ -614,6 +615,7 @@ window.addEventListener('unhandledrejection', function(e){
   function defaultState(){
     return {
       assets: [], incomes: [], incomeItems: [], expenseItems: [], expenseRecords: [], variableExpenses: [],
+      profile: { nickname: '' },
       pickLists: {
         category: ['保險', '稅金', '家用', '貸款', '電信'],
         itemName: [],
@@ -621,7 +623,7 @@ window.addEventListener('unhandledrejection', function(e){
         paymentMethod: [],
         variableName: ['交通', '育兒', '生活費', '毛孩', '備用'],
         incomeType: ['薪資', '津貼', '股息', '獎金', '其他'],
-        incomePayee: []
+        assetType: ['現金', '定存', '股票']
       }
     };
   }
@@ -633,6 +635,11 @@ window.addEventListener('unhandledrejection', function(e){
       var parsed = JSON.parse(raw);
       var base = defaultState();
       var pl = parsed.pickLists || {};
+      // 舊版「對象」清單分開存在 incomePayee，這裡合併進統一的 payee 清單，讓所有頁面共用同一份「對象」
+      var mergedPayee = Array.isArray(pl.payee) ? pl.payee.slice() : base.pickLists.payee.slice();
+      if(Array.isArray(pl.incomePayee)){
+        pl.incomePayee.forEach(function(v){ if(mergedPayee.indexOf(v) === -1) mergedPayee.push(v); });
+      }
       return {
         assets: Array.isArray(parsed.assets) ? parsed.assets : base.assets,
         incomes: Array.isArray(parsed.incomes) ? parsed.incomes : base.incomes,
@@ -640,14 +647,17 @@ window.addEventListener('unhandledrejection', function(e){
         expenseItems: Array.isArray(parsed.expenseItems) ? parsed.expenseItems : base.expenseItems,
         expenseRecords: Array.isArray(parsed.expenseRecords) ? parsed.expenseRecords : base.expenseRecords,
         variableExpenses: Array.isArray(parsed.variableExpenses) ? parsed.variableExpenses : base.variableExpenses,
+        profile: {
+          nickname: (parsed.profile && typeof parsed.profile.nickname === 'string') ? parsed.profile.nickname : ''
+        },
         pickLists: {
           category: Array.isArray(pl.category) ? pl.category : base.pickLists.category,
           itemName: Array.isArray(pl.itemName) ? pl.itemName : base.pickLists.itemName,
-          payee: Array.isArray(pl.payee) ? pl.payee : base.pickLists.payee,
+          payee: mergedPayee,
           paymentMethod: Array.isArray(pl.paymentMethod) ? pl.paymentMethod : base.pickLists.paymentMethod,
           variableName: Array.isArray(pl.variableName) ? pl.variableName : base.pickLists.variableName,
           incomeType: Array.isArray(pl.incomeType) ? pl.incomeType : base.pickLists.incomeType,
-          incomePayee: Array.isArray(pl.incomePayee) ? pl.incomePayee : base.pickLists.incomePayee
+          assetType: Array.isArray(pl.assetType) ? pl.assetType : base.pickLists.assetType
         }
       };
     }catch(e){
@@ -659,10 +669,10 @@ window.addEventListener('unhandledrejection', function(e){
   var state = loadState();
   normalizeExpenseItems();
   normalizeIncome();
+  normalizeAssets();
   var currentPage = 'dashboard';
   var fixedTab = 'month';
   var variableTab = 'month';
-  var incomeTab = 'list';
 
   // 把舊版「一個月一筆、五個固定欄位」的收入資料，一次性轉換成新版「多筆項目式」紀錄；
   // 只在還沒轉換過（incomeItems 是空的，但舊資料 incomes 有內容）時執行一次，之後不會重複轉換。
@@ -708,6 +718,29 @@ window.addEventListener('unhandledrejection', function(e){
       if('frequency' in it){ delete it.frequency; changed = true; }
     });
     if(changed) saveState();
+  }
+
+  // 把舊版「一個月一筆、現金/定存/股票三欄」的資產資料，轉成新版「一筆＝一個月＋一個分類＋一個對象＋一個金額」，
+  // 舊資料轉換後對象留空（未指定），金額為 0 的欄位不轉換成新紀錄。只在還沒轉換過時執行一次。
+  function normalizeAssets(){
+    var changed = false;
+    var converted = [];
+    state.assets.forEach(function(a){
+      var isLegacy = (a.cash != null || a.deposit != null || a.stock != null) && a.type == null;
+      if(!isLegacy){ converted.push(a); return; }
+      changed = true;
+      var legacyFields = { cash:'現金', deposit:'定存', stock:'股票' };
+      Object.keys(legacyFields).forEach(function(f){
+        var amt = Number(a[f]) || 0;
+        if(amt > 0){
+          converted.push({ id: uid('asset'), month: a.month, type: legacyFields[f], payee: '', amount: amt });
+        }
+      });
+    });
+    if(changed){
+      state.assets = converted;
+      saveState();
+    }
   }
 
   function saveState(){
@@ -762,7 +795,16 @@ window.addEventListener('unhandledrejection', function(e){
   }
 
   /* ============ Data helpers ============ */
-  function getAssetTotal(a){ return (Number(a.cash)||0) + (Number(a.deposit)||0) + (Number(a.stock)||0); }
+  function assetMonthTotal(monthStr){
+    return state.assets
+      .filter(function(a){ return a.month === monthStr; })
+      .reduce(function(sum, a){ return sum + (Number(a.amount) || 0); }, 0);
+  }
+  function assetPayeeTotal(monthStr, payee){
+    return state.assets
+      .filter(function(a){ return a.month === monthStr && (a.payee || '') === payee; })
+      .reduce(function(sum, a){ return sum + (Number(a.amount) || 0); }, 0);
+  }
   function getIncomeMonthTotal(monthStr){
     return state.incomeItems
       .filter(function(x){ return x.month === monthStr; })
@@ -930,35 +972,25 @@ window.addEventListener('unhandledrejection', function(e){
     saveState();
   }
 
-  var ASSET_FIELDS = ['cash','deposit','stock'];
-
-  // raw: 物件，值為表單原始字串（可能是 '' 代表留空）。
-  // editId 有值 = 編輯既有那一筆（欄位直接覆蓋，留空視為 0）。
-  // editId 無值 = 新增一筆（若該月份已有資料，只把「有填寫」的欄位加總進去；留空欄位不受影響）。
-  function upsertAsset(month, raw, editId){
+  // raw: {month, type, payee, amount}。editId 有值 = 編輯既有那一筆；沒有 = 新增一筆。
+  // 同一個月份＋分類＋對象只能有一筆，避免重複計入總資產；如果已存在，請改用編輯。
+  function upsertAsset(data, editId){
     if(editId){
       var idx = state.assets.findIndex(function(a){ return a.id === editId; });
       if(idx < 0) return { ok:false };
-      var collide = state.assets.find(function(a){ return a.month === month && a.id !== editId; });
-      if(collide) return { ok:false, reason:'collide' };
-      state.assets[idx].month = month;
-      ASSET_FIELDS.forEach(function(f){
-        state.assets[idx][f] = raw[f] === '' ? 0 : (Number(raw[f]) || 0);
+      var collide = state.assets.find(function(a){
+        return a.id !== editId && a.month === data.month && a.type === data.type && (a.payee || '') === (data.payee || '');
       });
+      if(collide) return { ok:false, reason:'collide' };
+      state.assets[idx] = Object.assign({}, state.assets[idx], data);
       saveState();
       return { ok:true, mode:'edit' };
     }
-    var existing = state.assets.find(function(a){ return a.month === month; });
-    if(existing){
-      ASSET_FIELDS.forEach(function(f){
-        if(raw[f] !== ''){ existing[f] = (Number(existing[f]) || 0) + (Number(raw[f]) || 0); }
-      });
-      saveState();
-      return { ok:true, mode:'accumulate' };
-    }
-    var rec = { id: uid('asset'), month: month };
-    ASSET_FIELDS.forEach(function(f){ rec[f] = raw[f] === '' ? 0 : (Number(raw[f]) || 0); });
-    state.assets.push(rec);
+    var existing = state.assets.find(function(a){
+      return a.month === data.month && a.type === data.type && (a.payee || '') === (data.payee || '');
+    });
+    if(existing) return { ok:false, reason:'collide' };
+    state.assets.push(Object.assign({ id: uid('asset') }, data));
     saveState();
     return { ok:true, mode:'create' };
   }
@@ -996,8 +1028,8 @@ window.addEventListener('unhandledrejection', function(e){
     saveState();
   }
 
-  /* ---- 固定支出：可自訂清單（分類／款項名稱／對象／繳費方式）---- */
-  var PICK_LIST_LABELS = { category: '分類', itemName: '款項名稱', payee: '對象', paymentMethod: '繳費方式', variableName: '款項名稱', incomeType: '項目', incomePayee: '對象' };
+  /* ---- 共用清單：分類／款項名稱／對象／繳費方式／項目／資產分類 ---- */
+  var PICK_LIST_LABELS = { category: '分類', itemName: '款項名稱', payee: '對象', paymentMethod: '繳費方式', variableName: '款項名稱', incomeType: '項目', assetType: '資產分類' };
   function addPickListValue(listKey, value){
     value = String(value || '').trim();
     if(!value) return false;
@@ -1042,7 +1074,6 @@ window.addEventListener('unhandledrejection', function(e){
   }
 
   function setExpenseTab(cat, tab){
-    if(cat === 'income'){ incomeTab = tab; renderIncomePage(); return; }
     if(cat === 'fixed') fixedTab = tab; else variableTab = tab;
     renderExpensePage(cat);
   }
@@ -1064,13 +1095,46 @@ window.addEventListener('unhandledrejection', function(e){
     else if(currentPage === 'backup') renderBackupPage();
   }
 
-  /* ============ Dashboard ============ */
+  function updateAppTitle(){
+    var el = document.getElementById('app-title-text');
+    if(!el) return;
+    var name = (state.profile && state.profile.nickname) ? String(state.profile.nickname).trim() : '';
+    el.textContent = name ? ('嗨~ ' + name + '，我是你的家庭理財小幫手') : '家庭理財小幫手';
+  }
+
+  /* ---- 通用分組工具：依指定欄位分組，並依清單順序排序 ---- */
+  function groupByKey(items, keyField, orderList){
+    var groups = {};
+    var groupOrder = [];
+    items.forEach(function(it){
+      var key = it[keyField] || '未分類';
+      if(!groups[key]){ groups[key] = []; groupOrder.push(key); }
+      groups[key].push(it);
+    });
+    var order = orderList || [];
+    groupOrder.sort(function(a, b){
+      if(a === '未分類') return 1;
+      if(b === '未分類') return -1;
+      var ia = order.indexOf(a); if(ia === -1) ia = 999;
+      var ib = order.indexOf(b); if(ib === -1) ib = 999;
+      if(ia !== ib) return ia - ib;
+      return a.localeCompare(b);
+    });
+    return { groups: groups, order: groupOrder };
+  }
+  function groupItemsByTag(items){
+    return groupByKey(items, 'tag', state.pickLists.category || []);
+  }
+
+  /* ============ Dashboard / Home ============ */
   function renderDashboard(){
-    var asset = state.assets.find(function(a){ return a.month === selectedMonth; });
-    var prevAsset = state.assets.find(function(a){ return a.month === prevMonthStr(selectedMonth); });
-    var total = asset ? getAssetTotal(asset) : 0;
-    var prevTotal = prevAsset ? getAssetTotal(prevAsset) : null;
-    var diff = (asset && prevAsset) ? (total - prevTotal) : null;
+    updateAppTitle();
+
+    var total = assetMonthTotal(selectedMonth);
+    var prevTotal = assetMonthTotal(prevMonthStr(selectedMonth));
+    var hasCurrentAsset = state.assets.some(function(a){ return a.month === selectedMonth; });
+    var hasPrevAsset = state.assets.some(function(a){ return a.month === prevMonthStr(selectedMonth); });
+    var diff = (hasCurrentAsset && hasPrevAsset) ? (total - prevTotal) : null;
 
     var incomeTotal = getIncomeMonthTotal(selectedMonth);
 
@@ -1099,13 +1163,51 @@ window.addEventListener('unhandledrejection', function(e){
         '<div class="card-label">' + formatMonthLabel(selectedMonth) + ' 總收入</div>' +
         '<div class="stat-value">NT$ ' + formatMoney(incomeTotal) + '</div>' +
       '</div>' +
-      '<div class="card' + (pendingPaid > 0 ? ' alert' : '') + '">' +
+      '<div class="card">' +
         '<div class="card-label">固定支出：本月未繳費</div><div class="stat-value">' + pendingPaid + ' 筆</div>' +
       '</div>' +
-      '<div class="card' + (pendingSaved > 0 ? ' alert' : '') + '">' +
+      '<div class="card">' +
         '<div class="card-label">本月未存入款項</div><div class="stat-value">' + pendingSaved + ' 筆</div>' +
       '</div>';
     document.getElementById('dashboard-cards').innerHTML = cardsHtml;
+
+    var fixedGrouped = groupItemsByTag(fixedItems);
+    var fixedByTagEl = document.getElementById('dashboard-fixed-by-tag');
+    if(fixedItems.length === 0){
+      fixedByTagEl.innerHTML = '<div class="empty-hint">尚未建立任何固定支出款項。</div>';
+    } else {
+      fixedByTagEl.innerHTML = fixedGrouped.order.map(function(key){
+        var sum = fixedGrouped.groups[key].reduce(function(s, it){ return s + monthlyBudgetOf(it); }, 0);
+        return '<div class="card"><div class="card-label">' + escapeHtml(key) + '</div><div class="stat-value">NT$ ' + formatMoney(sum) + '</div></div>';
+      }).join('');
+    }
+
+    var variableGrouped = groupItemsByTag(variableItems);
+    var variableByTagEl = document.getElementById('dashboard-variable-by-tag');
+    if(variableItems.length === 0){
+      variableByTagEl.innerHTML = '<div class="empty-hint">尚未建立任何變動支出款項。</div>';
+    } else {
+      variableByTagEl.innerHTML = variableGrouped.order.map(function(key){
+        var sum = variableGrouped.groups[key].reduce(function(s, it){ return s + variableSpendingInMonth(it.id, selectedMonth); }, 0);
+        return '<div class="card"><div class="card-label">' + escapeHtml(key) + '</div><div class="stat-value">NT$ ' + formatMoney(sum) + '</div></div>';
+      }).join('');
+    }
+
+    var monthAssets = state.assets.filter(function(a){ return a.month === selectedMonth; });
+    var payeeByEl = document.getElementById('dashboard-asset-by-payee');
+    if(monthAssets.length === 0){
+      payeeByEl.innerHTML = '<div class="empty-hint">本月尚無資產紀錄。</div>';
+    } else {
+      var payeeOrder = [];
+      monthAssets.forEach(function(a){
+        var key = a.payee || '未指定對象';
+        if(payeeOrder.indexOf(key) === -1) payeeOrder.push(key);
+      });
+      payeeByEl.innerHTML = payeeOrder.map(function(p){
+        var sum = assetPayeeTotal(selectedMonth, p === '未指定對象' ? '' : p);
+        return '<div class="card"><div class="card-label">' + escapeHtml(p) + '</div><div class="stat-value">NT$ ' + formatMoney(sum) + '</div></div>';
+      }).join('');
+    }
 
     var listEl = document.getElementById('dashboard-alert-list');
     if(state.expenseItems.length === 0){
@@ -1138,7 +1240,7 @@ window.addEventListener('unhandledrejection', function(e){
   function renderAssetsPage(){
     var searchEl = document.getElementById('assets-search');
     var search = searchEl ? searchEl.value.trim() : '';
-    var rows = state.assets.slice().sort(function(a,b){ return b.month.localeCompare(a.month); });
+    var rows = state.assets.slice();
     if(search) rows = rows.filter(function(r){ return r.month.indexOf(search) !== -1; });
 
     var wrap = document.getElementById('assets-table-wrap');
@@ -1146,82 +1248,79 @@ window.addEventListener('unhandledrejection', function(e){
       wrap.innerHTML = '<div class="empty-hint">尚無資產紀錄，點擊右上角「新增紀錄」開始建立。</div>';
       return;
     }
-    var html = '<table class="data-table"><thead><tr>' +
-      '<th>月份</th><th>活存</th><th>定存</th><th>股票市值</th><th>合計</th><th>較上月</th><th>操作</th>' +
-      '</tr></thead><tbody>';
-    rows.forEach(function(a){
-      var total = getAssetTotal(a);
-      var prev = state.assets.find(function(x){ return x.month === prevMonthStr(a.month); });
-      var diff = prev ? (total - getAssetTotal(prev)) : null;
-      html += '<tr>' +
-        '<td data-label="月份"><strong>' + formatMonthLabel(a.month) + '</strong></td>' +
-        '<td data-label="活存">NT$ ' + formatMoney(a.cash) + '</td>' +
-        '<td data-label="定存">NT$ ' + formatMoney(a.deposit) + '</td>' +
-        '<td data-label="股票市值">NT$ ' + formatMoney(a.stock) + '</td>' +
-        '<td data-label="合計"><strong>NT$ ' + formatMoney(total) + '</strong></td>' +
-        '<td data-label="較上月">' + (diff === null ? '—' : '<span class="diff ' + (diff >= 0 ? 'up' : 'down') + '">' + (diff >= 0 ? '▲' : '▼') + ' ' + formatMoney(Math.abs(diff)) + '</span>') + '</td>' +
-        '<td data-label="操作">' +
-          '<button class="btn-icon" data-edit-asset="' + a.id + '" title="編輯">✎</button>' +
-          '<button class="btn-icon danger" data-del-asset="' + a.id + '" title="刪除">🗑</button>' +
-        '</td>' +
-      '</tr>';
-    });
-    html += '</tbody></table>';
-    wrap.innerHTML = html;
+
+    var grouped = groupByKey(rows, 'type', state.pickLists.assetType || []);
+    wrap.innerHTML = grouped.order.map(function(key){
+      var items = grouped.groups[key].slice().sort(function(a,b){ return b.month.localeCompare(a.month); });
+      var groupTotal = items.filter(function(a){ return a.month === selectedMonth; })
+        .reduce(function(s,a){ return s + (Number(a.amount)||0); }, 0);
+      var trs = items.map(function(a){
+        return '<tr>' +
+          '<td data-label="月份"><strong>' + formatMonthLabel(a.month) + '</strong></td>' +
+          '<td data-label="對象">' + (a.payee ? escapeHtml(a.payee) : '—') + '</td>' +
+          '<td data-label="金額">NT$ ' + formatMoney(a.amount) + '</td>' +
+          '<td data-label="操作">' +
+            '<button class="btn-icon" data-edit-asset="' + a.id + '" title="編輯">✎</button>' +
+            '<button class="btn-icon danger" data-del-asset="' + a.id + '" title="刪除">🗑</button>' +
+          '</td>' +
+        '</tr>';
+      }).join('');
+      return (
+        '<div class="section-title">' + escapeHtml(key) + '（' + items.length + '筆，' + formatMonthLabel(selectedMonth) + ' 小計 NT$ ' + formatMoney(groupTotal) + '）</div>' +
+        '<div class="table-wrap" style="margin-bottom:18px;"><table class="data-table"><thead><tr>' +
+          '<th>月份</th><th>對象</th><th>金額</th><th>操作</th>' +
+        '</tr></thead><tbody>' + trs + '</tbody></table></div>'
+      );
+    }).join('');
   }
 
   function openAssetModal(existing){
     var isEdit = !!existing;
-    var a = existing || { month: selectedMonth, cash:'', deposit:'', stock:'' };
-    var hint = isEdit
-      ? '直接輸入正確金額即可，會覆蓋這一筆原本的資料。'
-      : '只填有金額異動的欄位就好，留空的欄位不會被更動；若該月份已有資料，填寫的欄位會自動累加上去。';
+    var a = existing || { month: selectedMonth, type:'', payee:'', amount:'' };
     var html =
       '<form id="asset-form">' +
-        '<p class="form-hint">' + hint + '</p>' +
+        '<p class="form-hint">一筆紀錄代表「這個月＋這個分類＋這個對象」的資產金額，同樣的組合已有資料時請改用編輯。</p>' +
         '<label>月份<input type="month" name="month" value="' + a.month + '" required></label>' +
-        '<label>活存金額 (NT$)<input type="number" name="cash" value="' + a.cash + '" step="1" placeholder="留空 = 不異動"></label>' +
-        '<label>定存金額 (NT$)<input type="number" name="deposit" value="' + a.deposit + '" step="1" placeholder="留空 = 不異動"></label>' +
-        '<label>股票市值 (NT$)<input type="number" name="stock" value="' + a.stock + '" step="1" placeholder="留空 = 不異動"></label>' +
+        pickerFieldHtml('assetType', a.type || '', true, true) +
+        pickerFieldHtml('payee', a.payee || '', false, false) +
+        '<label>金額 (NT$)<input type="number" name="amount" value="' + a.amount + '" min="0" step="1" required></label>' +
         '<div class="modal-actions">' +
           '<button type="button" class="btn secondary" data-close>取消</button>' +
           '<button type="button" class="btn primary" id="modal-submit-btn">儲存</button>' +
         '</div>' +
       '</form>';
     openModal(isEdit ? '編輯資產紀錄' : '新增資產紀錄', html, function(){
+      bindPickerEvents();
       document.getElementById('modal-submit-btn').addEventListener('click', function(e){
         e.preventDefault();
         var fd = new FormData(document.getElementById('asset-form'));
         var month = fd.get('month');
         if(!month){ showToast('請選擇月份', 'error'); return; }
-        var raw = { cash: fd.get('cash'), deposit: fd.get('deposit'), stock: fd.get('stock') };
-        var result = upsertAsset(month, raw, isEdit ? existing.id : null);
+        var type = readPickerValue('assetType');
+        if(!type){ showToast('請選擇或新增資產分類', 'error'); return; }
+        var amountVal = fd.get('amount');
+        if(amountVal === ''){ showToast('請輸入金額', 'error'); return; }
+        var data = {
+          month: month,
+          type: type,
+          payee: readPickerValue('payee'),
+          amount: Number(amountVal) || 0
+        };
+        var result = upsertAsset(data, isEdit ? existing.id : null);
         if(!result.ok){
-          if(result.reason === 'collide'){ showToast('該月份已有其他資產紀錄，請改用「新增」以累加金額', 'error'); }
+          if(result.reason === 'collide'){ showToast('這個月份＋分類＋對象已經有紀錄了，請直接編輯那一筆', 'error'); }
           else{ showToast('儲存失敗', 'error'); }
           return;
         }
         closeModal();
         renderCurrentPage();
-        showToast(result.mode === 'accumulate' ? '已累加至該月份的資產資料' : '已儲存資產紀錄');
+        showToast('已儲存資產紀錄');
       });
     });
   }
 
   /* ============ Income page ============ */
   function renderIncomePage(){
-    document.querySelectorAll('[data-tab][data-cat="income"]').forEach(function(b){
-      b.classList.toggle('active', b.dataset.tab === incomeTab);
-    });
-    if(incomeTab === 'lists'){
-      document.getElementById('income-tab-list').style.display = 'none';
-      document.getElementById('income-tab-lists').style.display = '';
-      renderPickListsInto('income-lists-wrap', ['incomeType', 'incomePayee']);
-      return;
-    }
-    document.getElementById('income-tab-list').style.display = '';
-    document.getElementById('income-tab-lists').style.display = 'none';
-
     var searchEl = document.getElementById('income-search');
     var search = searchEl ? searchEl.value.trim() : '';
     var rows = state.incomeItems.slice();
@@ -1275,6 +1374,42 @@ window.addEventListener('unhandledrejection', function(e){
     }).join('');
   }
 
+  function incomeAddFieldsHtml(){
+    var typeList = state.pickLists.incomeType || [];
+    var fieldsHtml = typeList.length === 0
+      ? '<p class="field-note">尚未建立任何「項目」，請在下面新增第一個。</p>'
+      : typeList.map(function(t){
+          return '<div style="display:flex;align-items:flex-end;gap:8px;">' +
+            '<label style="flex:1;">' + escapeHtml(t) + ' (NT$)<input type="number" class="income-type-amount" data-type="' + escapeHtml(t) + '" min="0" step="1" placeholder="留空 = 不新增這筆"></label>' +
+            '<button type="button" class="list-chip-del" data-del-income-type="' + escapeHtml(t) + '" title="刪除此項目" style="margin-bottom:14px;">✕</button>' +
+          '</div>';
+        }).join('');
+    fieldsHtml += '<div class="vexp-add-row" style="margin:0 0 14px;">' +
+      '<input type="text" class="mini-input vexp-note-input" placeholder="新增項目" id="new-income-type-input">' +
+      '<button type="button" class="btn-icon vexp-add-btn" id="btn-add-income-type" title="新增">＋</button>' +
+    '</div>';
+    return fieldsHtml;
+  }
+
+  function bindIncomeAddFieldEvents(){
+    document.querySelectorAll('[data-del-income-type]').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        deletePickListValue('incomeType', btn.dataset.delIncomeType);
+        openIncomeModal(null);
+      });
+    });
+    var addBtn = document.getElementById('btn-add-income-type');
+    if(addBtn){
+      addBtn.addEventListener('click', function(){
+        var input = document.getElementById('new-income-type-input');
+        var val = input ? input.value.trim() : '';
+        if(!val){ showToast('請輸入項目名稱', 'error'); return; }
+        addPickListValue('incomeType', val);
+        openIncomeModal(null);
+      });
+    }
+  }
+
   function openIncomeModal(existing){
     var isEdit = !!existing;
 
@@ -1282,8 +1417,8 @@ window.addEventListener('unhandledrejection', function(e){
       var i = existing;
       var editHtml =
         '<form id="income-form">' +
-          pickerFieldHtml('incomeType', i.itemType || '', true) +
-          pickerFieldHtml('incomePayee', i.payee || '', false) +
+          pickerFieldHtml('incomeType', i.itemType || '', true, true) +
+          pickerFieldHtml('payee', i.payee || '', false, false) +
           '<label>月份<input type="month" name="month" value="' + i.month + '" required></label>' +
           '<label>金額 (NT$)<input type="number" name="amount" value="' + i.amount + '" min="0" step="1" required></label>' +
           '<label>備註（選填）<input type="text" name="note" value="' + escapeHtml(i.note || '') + '" placeholder="選填"></label>' +
@@ -1300,12 +1435,12 @@ window.addEventListener('unhandledrejection', function(e){
           var month = fd.get('month');
           if(!month){ showToast('請選擇月份', 'error'); return; }
           var itemType = readPickerValue('incomeType');
-          if(!itemType){ showToast('請選擇項目（如清單是空的，請先到「清單設定」新增）', 'error'); return; }
+          if(!itemType){ showToast('請選擇或新增項目', 'error'); return; }
           upsertIncomeItem({
             id: existing.id,
             month: month,
             itemType: itemType,
-            payee: readPickerValue('incomePayee'),
+            payee: readPickerValue('payee'),
             amount: Number(fd.get('amount')) || 0,
             note: String(fd.get('note') || '').trim()
           });
@@ -1318,18 +1453,12 @@ window.addEventListener('unhandledrejection', function(e){
     }
 
     // 新增：一次列出清單裡所有項目的金額欄位，跟舊版一樣可以同時填好幾項，只填有收到的就好
-    var typeList = state.pickLists.incomeType || [];
-    var fieldsHtml = typeList.length === 0
-      ? '<p class="field-note">尚未建立任何「項目」選項，請先到「清單設定」新增。</p>'
-      : typeList.map(function(t, idx){
-          return '<label>' + escapeHtml(t) + ' (NT$)<input type="number" class="income-type-amount" data-type="' + escapeHtml(t) + '" min="0" step="1" placeholder="留空 = 不新增這筆"></label>';
-        }).join('');
     var addHtml =
       '<form id="income-form">' +
         '<p class="form-hint">只填有收到的項目金額就好，留空的項目不會新增紀錄；可以一次填好幾項，會各自變成一筆獨立的收入紀錄。</p>' +
         '<label>月份<input type="month" name="month" value="' + selectedMonth + '" required></label>' +
-        fieldsHtml +
-        pickerFieldHtml('incomePayee', '', false) +
+        incomeAddFieldsHtml() +
+        pickerFieldHtml('payee', '', false, false) +
         '<label>備註（選填）<input type="text" name="note" value="" placeholder="選填，套用到這次新增的每一筆"></label>' +
         '<div class="modal-actions">' +
           '<button type="button" class="btn secondary" data-close>取消</button>' +
@@ -1338,12 +1467,13 @@ window.addEventListener('unhandledrejection', function(e){
       '</form>';
     openModal('新增收入紀錄', addHtml, function(){
       bindPickerEvents();
+      bindIncomeAddFieldEvents();
       document.getElementById('modal-submit-btn').addEventListener('click', function(e){
         e.preventDefault();
         var fd = new FormData(document.getElementById('income-form'));
         var month = fd.get('month');
         if(!month){ showToast('請選擇月份', 'error'); return; }
-        var payee = readPickerValue('incomePayee');
+        var payee = readPickerValue('payee');
         var note = String(fd.get('note') || '').trim();
         var amountInputs = document.querySelectorAll('#income-form .income-type-amount');
         var addedCount = 0;
@@ -1380,18 +1510,14 @@ window.addEventListener('unhandledrejection', function(e){
     });
     document.getElementById(cat + '-tab-month').style.display = tab === 'month' ? '' : 'none';
     document.getElementById(cat + '-tab-manage').style.display = tab === 'manage' ? '' : 'none';
-    var listsEl = document.getElementById(cat + '-tab-lists');
-    if(listsEl) listsEl.style.display = tab === 'lists' ? '' : 'none';
     var addBtn = document.getElementById('btn-add-' + cat);
     if(addBtn) addBtn.style.display = tab === 'manage' ? '' : 'none';
     if(cat === 'fixed'){
       if(tab === 'month') renderFixedMonthTab();
-      else if(tab === 'manage') renderFixedManageTab();
-      else renderFixedListsTab();
+      else renderFixedManageTab();
     } else {
       if(tab === 'month') renderVariableMonthTab();
-      else if(tab === 'manage') renderVariableManageTab();
-      else renderVariableListsTab();
+      else renderVariableManageTab();
     }
   }
 
@@ -1485,26 +1611,6 @@ window.addEventListener('unhandledrejection', function(e){
     }).join('');
   }
 
-  function groupItemsByTag(items){
-    var groups = {};
-    var groupOrder = [];
-    items.forEach(function(it){
-      var key = it.tag || '未分類';
-      if(!groups[key]){ groups[key] = []; groupOrder.push(key); }
-      groups[key].push(it);
-    });
-    var catOrder = state.pickLists.category || [];
-    groupOrder.sort(function(a, b){
-      if(a === '未分類') return 1;
-      if(b === '未分類') return -1;
-      var ia = catOrder.indexOf(a); if(ia === -1) ia = 999;
-      var ib = catOrder.indexOf(b); if(ib === -1) ib = 999;
-      if(ia !== ib) return ia - ib;
-      return a.localeCompare(b);
-    });
-    return { groups: groups, order: groupOrder };
-  }
-
   function renderFixedManageTab(){
     var wrap = document.getElementById('fixed-manage-wrap');
     var catItems = state.expenseItems.filter(function(it){ return it.category === 'fixed'; });
@@ -1566,12 +1672,6 @@ window.addEventListener('unhandledrejection', function(e){
         '</div>'
       );
     }).join('');
-  }
-  function renderFixedListsTab(){
-    renderPickListsInto('fixed-lists-wrap', ['category', 'itemName', 'payee', 'paymentMethod']);
-  }
-  function renderVariableListsTab(){
-    renderPickListsInto('variable-lists-wrap', ['category', 'variableName', 'payee', 'paymentMethod']);
   }
 
   /* ---- Variable expenses: running deposit/expense ledger, no reset ---- */
@@ -1719,8 +1819,7 @@ window.addEventListener('unhandledrejection', function(e){
     return out;
   }
 
-  /* ---- 固定支出專用：下拉可選清單欄位（分類／款項名稱／對象／繳費方式）---- */
-  // 記帳用的付款方式下拉選單，內容跟清單設定的「繳費方式」共用同一份清單
+  // 記帳用的付款方式下拉選單，內容跟「設定」頁面的「繳費方式」共用同一份清單
   function paymentMethodOptionsHtml(){
     var list = state.pickLists.paymentMethod || [];
     var opts = '<option value="">付款方式</option>';
@@ -1730,26 +1829,61 @@ window.addEventListener('unhandledrejection', function(e){
     return opts;
   }
 
-  function pickerFieldHtml(listKey, currentValue, required){
-    var list = (state.pickLists[listKey] || []).slice();
-    if(currentValue && list.indexOf(currentValue) === -1) list.push(currentValue);
+  /* ---- 表單裡的清單選擇欄位 ----
+     manageable = true：這個欄位的清單直接在表單裡新增／刪除（分類、款項名稱、項目、資產分類）
+     manageable = false：這個欄位的清單只能在「設定」頁面管理（對象、繳費方式） */
+  function pickerChipsInnerHtml(listKey, list, currentValue, required, manageable){
     var label = PICK_LIST_LABELS[listKey];
-    var out = '<div class="field-block">' + label + (required ? '' : '（選填）');
-    if(list.length === 0){
-      out += '<p class="field-note">尚未建立任何「' + label + '」選項，請先到「清單設定」新增。</p>';
+    var html = '';
+    if(list.length === 0 && !manageable){
+      html += '<p class="field-note">尚未建立任何「' + label + '」選項，請先到「設定」頁面新增。</p>';
     } else {
-      out += '<div class="category-chips" data-chip-group="' + listKey + '">';
+      html += '<div class="category-chips" data-chip-group="' + listKey + '">';
       if(!required){
-        out += '<label class="check-field ' + (!currentValue ? 'done' : '') + '"><input type="radio" name="picker-' + listKey + '" value="" ' + (!currentValue ? 'checked' : '') + '>未選擇</label>';
+        html += '<label class="check-field ' + (!currentValue ? 'done' : '') + '"><input type="radio" name="picker-' + listKey + '" value="" ' + (!currentValue ? 'checked' : '') + '>未選擇</label>';
       }
       list.forEach(function(v){
         var isChecked = v === currentValue;
-        out += '<label class="check-field ' + (isChecked ? 'done' : '') + '"><input type="radio" name="picker-' + listKey + '" value="' + escapeHtml(v) + '" ' + (isChecked ? 'checked' : '') + '>' + escapeHtml(v) + '</label>';
+        html += '<span class="chip-with-del">' +
+          '<label class="check-field ' + (isChecked ? 'done' : '') + '"><input type="radio" name="picker-' + listKey + '" value="' + escapeHtml(v) + '" ' + (isChecked ? 'checked' : '') + '>' + escapeHtml(v) + '</label>' +
+          (manageable ? '<button type="button" class="list-chip-del" data-inline-del-list="' + listKey + '" data-list-value="' + escapeHtml(v) + '" title="刪除">✕</button>' : '') +
+        '</span>';
       });
-      out += '</div>';
+      html += '</div>';
     }
+    if(manageable){
+      html += '<div class="vexp-add-row" style="margin-top:8px;">' +
+        '<input type="text" class="mini-input vexp-note-input" placeholder="新增' + label + '" data-inline-new-list="' + listKey + '">' +
+        '<button type="button" class="btn-icon vexp-add-btn" data-inline-add-list="' + listKey + '" title="新增">＋</button>' +
+      '</div>';
+    }
+    return html;
+  }
+  function pickerFieldHtml(listKey, currentValue, required, manageable){
+    manageable = !!manageable;
+    var list = (state.pickLists[listKey] || []).slice();
+    if(currentValue && list.indexOf(currentValue) === -1) list.push(currentValue);
+    var label = PICK_LIST_LABELS[listKey];
+    var out = '<div class="field-block" data-field-wrap="' + listKey + '" data-required="' + (required ? '1' : '0') + '" data-manageable="' + (manageable ? '1' : '0') + '">';
+    out += label + (required ? '' : '（選填）');
+    out += '<div class="picker-dynamic">' + pickerChipsInnerHtml(listKey, list, currentValue, required, manageable) + '</div>';
     out += '</div>';
     return out;
+  }
+  function refreshPickerField(listKey, preferValue){
+    var wrap = document.querySelector('#modal-body [data-field-wrap="' + listKey + '"]');
+    if(!wrap) return;
+    var required = wrap.dataset.required === '1';
+    var manageable = wrap.dataset.manageable === '1';
+    var dyn = wrap.querySelector('.picker-dynamic');
+    var currentChecked = wrap.querySelector('input[name="picker-' + listKey + '"]:checked');
+    var currentValue = preferValue != null ? preferValue : (currentChecked ? currentChecked.value : '');
+    var list = (state.pickLists[listKey] || []).slice();
+    if(preferValue == null && currentValue && list.indexOf(currentValue) === -1){
+      currentValue = '';
+    }
+    dyn.innerHTML = pickerChipsInnerHtml(listKey, list, currentValue, required, manageable);
+    bindPickerEvents();
   }
   function bindPickerEvents(){
     document.querySelectorAll('#modal-body [data-chip-group]').forEach(function(group){
@@ -1773,11 +1907,11 @@ window.addEventListener('unhandledrejection', function(e){
       var it = existing || { name:'', amount:'', paymentMonths:[], note:'', tag:'', payee:'', paymentMethod:'' };
       var html =
         '<form id="item-form">' +
-          pickerFieldHtml('category', it.tag || '', false) +
-          pickerFieldHtml('itemName', it.name || '', true) +
-          pickerFieldHtml('payee', it.payee || '', false) +
+          pickerFieldHtml('category', it.tag || '', false, true) +
+          pickerFieldHtml('itemName', it.name || '', true, true) +
+          pickerFieldHtml('payee', it.payee || '', false, false) +
           '<label>金額 (NT$)<input type="number" name="amount" value="' + it.amount + '" min="0" step="1" required></label>' +
-          pickerFieldHtml('paymentMethod', it.paymentMethod || '', false) +
+          pickerFieldHtml('paymentMethod', it.paymentMethod || '', false, false) +
           '<div class="field-block">繳費月份（可複選，留空代表每月）' + monthGridHtml(it.paymentMonths || []) +
             '<p class="field-note">系統會依勾選的月份數量與間隔，自動判斷是年繳、季繳、雙月繳或月繳，並以每次繳費金額作為存款進度目標。</p>' +
             '<p class="field-note">此為實際「繳費」的月份；「存款」每個月都會提醒，以便提前存夠款項。</p>' +
@@ -1794,7 +1928,7 @@ window.addEventListener('unhandledrejection', function(e){
           e.preventDefault();
           var fd = new FormData(document.getElementById('item-form'));
           var name = readPickerValue('itemName');
-          if(!name){ showToast('請選擇款項名稱（如清單是空的，請先到「清單設定」新增）', 'error'); return; }
+          if(!name){ showToast('請選擇或新增款項名稱', 'error'); return; }
           var paymentMonths = fd.getAll('months').map(function(v){ return parseInt(v, 10); });
           var data = {
             category: 'fixed',
@@ -1826,13 +1960,13 @@ window.addEventListener('unhandledrejection', function(e){
       var capAmountHtml = '<label id="mode-replenish-field" style="display:none;"><span>上限額度 (NT$)</span><input type="number" name="capAmount" value="' + vit.capAmount + '" min="0" step="1" placeholder="例如：5000"></label>';
       var vhtml =
         '<form id="item-form">' +
-          pickerFieldHtml('category', vit.tag || '', false) +
-          pickerFieldHtml('variableName', vit.name || '', true) +
-          pickerFieldHtml('payee', vit.payee || '', false) +
+          pickerFieldHtml('category', vit.tag || '', false, true) +
+          pickerFieldHtml('variableName', vit.name || '', true, true) +
+          pickerFieldHtml('payee', vit.payee || '', false, false) +
           modeChipsHtml +
           saveAmountHtml +
           capAmountHtml +
-          pickerFieldHtml('paymentMethod', vit.paymentMethod || '', false) +
+          pickerFieldHtml('paymentMethod', vit.paymentMethod || '', false, false) +
           '<label>備註（選填）<input type="text" name="note" value="' + escapeHtml(vit.note || '') + '" placeholder="選填"></label>' +
           '<p class="field-note">存模式：每月固定存入設定的額度，資金池 = 上月餘額 − 本月花費 + 本月存入（記帳當下就會立即反映）。<br>補模式：設定上限，系統依上月結餘建議這個月要補多少，實際補入金額每月仍可調整。<br>記帳可在同一個月不限次數新增，同品項會自動加總。</p>' +
           '<div class="modal-actions">' +
@@ -1855,7 +1989,7 @@ window.addEventListener('unhandledrejection', function(e){
           e.preventDefault();
           var fd = new FormData(document.getElementById('item-form'));
           var name = readPickerValue('variableName');
-          if(!name){ showToast('請選擇款項名稱（如清單是空的，請先到「清單設定」新增）', 'error'); return; }
+          if(!name){ showToast('請選擇或新增款項名稱', 'error'); return; }
           var modeChecked = document.querySelector('#item-form input[name="picker-mode"]:checked');
           var mode = modeChecked ? modeChecked.value : 'save';
           var data = {
@@ -1880,14 +2014,29 @@ window.addEventListener('unhandledrejection', function(e){
     }
   }
 
-  /* ============ Backup page ============ */
+  /* ============ Settings / Backup page ============ */
   function renderBackupPage(){
-    document.getElementById('backup-stats').innerHTML =
-      '<div>資產紀錄：' + state.assets.length + ' 筆</div>' +
-      '<div>收入紀錄：' + state.incomeItems.length + ' 筆</div>' +
-      '<div>支出款項：' + state.expenseItems.length + ' 筆</div>' +
-      '<div>支出每月紀錄：' + state.expenseRecords.length + ' 筆</div>' +
-      '<div>變動支出明細：' + state.variableExpenses.length + ' 筆</div>';
+    var nickInput = document.getElementById('profile-nickname-input');
+    if(nickInput) nickInput.value = (state.profile && state.profile.nickname) || '';
+    renderPickListsInto('settings-lists-wrap', ['payee', 'paymentMethod']);
+  }
+
+  function openGuideModal(){
+    var html =
+      '<div style="font-size:13.5px;color:var(--dark);line-height:1.8;">' +
+        '<h3 style="margin:0 0 6px;">清單怎麼新增／刪除？</h3>' +
+        '<p>分類、款項名稱、項目、資產分類這些清單，直接在「新增款項」或「新增紀錄」的表單裡就能管理：輸入文字按旁邊的「＋」會加進清單，選項旁邊的「✕」可以刪除。「對象」跟「繳費方式」這兩個清單統一在「設定」頁面管理，新增後所有頁面都會同步看到同一份清單。</p>' +
+        '<h3 style="margin:16px 0 6px;">固定支出：已繳費 / 已存款是什麼？</h3>' +
+        '<p><strong>已繳費</strong>：代表這期真的把錢繳出去了（例如保費真的付給保險公司），只有輪到「繳費月份」才會出現這個勾選。<br>' +
+        '<strong>已存款</strong>：代表你這個月有為了這筆款項先存一筆錢起來，每個月都會提醒你存，這樣繳費月份到的時候才存得夠。</p>' +
+        '<p><strong>怎麼輸入：</strong>新增款項時填總金額、勾選實際繳費的月份（例如年繳就只勾 1 個月），系統會自動判斷是月繳／雙月繳／季繳／年繳，並算出「月預算」——也就是平均每個月要先存多少錢，等到繳費月份到的時候剛好存夠。</p>' +
+        '<h3 style="margin:16px 0 6px;">變動支出：補模式 / 存模式差在哪？</h3>' +
+        '<p><strong>存模式</strong>：每個月固定存入一筆額度到資金池，不管上個月剩多少。<br>' +
+        '<strong>補模式</strong>：設定一個上限，系統會依照上個月結餘，建議這個月要「補」多少錢，把資金池補到上限。</p>' +
+        '<p><strong>記帳方式：</strong>資金池 = 上月餘額 － 本月花費 ＋ 本月存入/補入；花多少就在下面「記帳」新增一筆，同一個品項會自動加總；存入/補入要自己打勾確認，沒打勾不會計入資金池。</p>' +
+      '</div>' +
+      '<div class="modal-actions"><button type="button" class="btn primary" data-close>了解了</button></div>';
+    openModal('使用說明', html, null);
   }
 
   function exportData(){
@@ -1919,6 +2068,10 @@ window.addEventListener('unhandledrejection', function(e){
       confirmAction('匯入將會覆蓋目前所有資料，確定要繼續嗎？', function(){
         var base = defaultState();
         var pl = parsed.pickLists || {};
+        var mergedPayee = Array.isArray(pl.payee) ? pl.payee.slice() : base.pickLists.payee.slice();
+        if(Array.isArray(pl.incomePayee)){
+          pl.incomePayee.forEach(function(v){ if(mergedPayee.indexOf(v) === -1) mergedPayee.push(v); });
+        }
         state = {
           assets: Array.isArray(parsed.assets) ? parsed.assets : base.assets,
           incomes: Array.isArray(parsed.incomes) ? parsed.incomes : base.incomes,
@@ -1926,19 +2079,24 @@ window.addEventListener('unhandledrejection', function(e){
           expenseItems: Array.isArray(parsed.expenseItems) ? parsed.expenseItems : base.expenseItems,
           expenseRecords: Array.isArray(parsed.expenseRecords) ? parsed.expenseRecords : base.expenseRecords,
           variableExpenses: Array.isArray(parsed.variableExpenses) ? parsed.variableExpenses : base.variableExpenses,
+          profile: {
+            nickname: (parsed.profile && typeof parsed.profile.nickname === 'string') ? parsed.profile.nickname : ''
+          },
           pickLists: {
             category: Array.isArray(pl.category) ? pl.category : base.pickLists.category,
             itemName: Array.isArray(pl.itemName) ? pl.itemName : base.pickLists.itemName,
-            payee: Array.isArray(pl.payee) ? pl.payee : base.pickLists.payee,
+            payee: mergedPayee,
             paymentMethod: Array.isArray(pl.paymentMethod) ? pl.paymentMethod : base.pickLists.paymentMethod,
             variableName: Array.isArray(pl.variableName) ? pl.variableName : base.pickLists.variableName,
             incomeType: Array.isArray(pl.incomeType) ? pl.incomeType : base.pickLists.incomeType,
-            incomePayee: Array.isArray(pl.incomePayee) ? pl.incomePayee : base.pickLists.incomePayee
+            assetType: Array.isArray(pl.assetType) ? pl.assetType : base.pickLists.assetType
           }
         };
         normalizeExpenseItems();
         normalizeIncome();
+        normalizeAssets();
         saveState();
+        updateAppTitle();
         renderCurrentPage();
         showToast('匯入成功');
       });
@@ -1951,6 +2109,7 @@ window.addEventListener('unhandledrejection', function(e){
       confirmAction('再次確認：真的要清除全部資料嗎？', function(){
         state = defaultState();
         saveState();
+        updateAppTitle();
         renderCurrentPage();
         showToast('已清除所有資料');
       });
@@ -2060,24 +2219,39 @@ window.addEventListener('unhandledrejection', function(e){
       var newVal = newListInput ? newListInput.value.trim() : '';
       if(!newVal){ showToast('請輸入內容', 'error'); return; }
       addPickListValue(listKey, newVal);
-      if(t.closest('#income-tab-lists')) renderIncomePage();
-      else if(t.closest('#variable-tab-lists')) renderVariableListsTab();
-      else renderFixedListsTab();
+      renderBackupPage();
       showToast('已新增至' + PICK_LIST_LABELS[listKey] + '清單');
       return;
     }
     if((t = e.target.closest('[data-del-list]'))){
       var delListKey = t.dataset.delList;
       var delListVal = t.dataset.listValue;
-      var isIncomeListsPage = !!t.closest('#income-tab-lists');
-      var isVariableListsPage = !!t.closest('#variable-tab-lists');
       confirmAction('確定要從清單刪除「' + delListVal + '」嗎？已使用這個值的款項不會被更動。', function(){
         deletePickListValue(delListKey, delListVal);
-        if(isIncomeListsPage) renderIncomePage();
-        else if(isVariableListsPage) renderVariableListsTab();
-        else renderFixedListsTab();
+        renderBackupPage();
         showToast('已刪除');
       });
+      return;
+    }
+    // 表單裡的清單欄位（分類／款項名稱／項目／資產分類）就地新增；這類清單只是標籤用途，
+    // 為避免跟表單本身的「確定刪除」彈窗互相蓋掉，新增/刪除不另外跳確認視窗，按錯可以再手動加回來。
+    if((t = e.target.closest('[data-inline-add-list]'))){
+      var ilKey = t.dataset.inlineAddList;
+      var wrap = t.closest('[data-field-wrap="' + ilKey + '"]');
+      var input = wrap ? wrap.querySelector('input[data-inline-new-list="' + ilKey + '"]') : null;
+      var val = input ? input.value.trim() : '';
+      if(!val){ showToast('請輸入內容', 'error'); return; }
+      addPickListValue(ilKey, val);
+      refreshPickerField(ilKey, val);
+      showToast('已新增至' + PICK_LIST_LABELS[ilKey] + '清單');
+      return;
+    }
+    if((t = e.target.closest('[data-inline-del-list]'))){
+      var delKey = t.dataset.inlineDelList;
+      var delVal = t.dataset.listValue;
+      deletePickListValue(delKey, delVal);
+      refreshPickerField(delKey, null);
+      showToast('已刪除，如果按錯可以再手動新增一次');
       return;
     }
     if(e.target.closest('#btn-add-asset')){ openAssetModal(null); return; }
@@ -2090,6 +2264,15 @@ window.addEventListener('unhandledrejection', function(e){
     if(e.target.closest('#btn-export')){ exportData(); return; }
     if(e.target.closest('#btn-import')){ document.getElementById('file-import').click(); return; }
     if(e.target.closest('#btn-clear-all')){ clearAllData(); return; }
+    if(e.target.closest('#btn-save-profile')){
+      var nickVal = document.getElementById('profile-nickname-input').value.trim();
+      state.profile.nickname = nickVal;
+      saveState();
+      updateAppTitle();
+      showToast('已儲存稱呼');
+      return;
+    }
+    if(e.target.closest('#btn-open-guide')){ openGuideModal(); return; }
   });
 
   document.addEventListener('keydown', function(e){
@@ -2106,6 +2289,20 @@ window.addEventListener('unhandledrejection', function(e){
       var card2 = e.target.closest('.backup-card');
       var addBtn = card2 ? card2.querySelector('[data-add-list="' + listKey2 + '"]') : null;
       if(addBtn) addBtn.click();
+      return;
+    }
+    if(e.key === 'Enter' && e.target.matches('input[data-inline-new-list]')){
+      e.preventDefault();
+      var ilKey2 = e.target.dataset.inlineNewList;
+      var wrap2 = e.target.closest('[data-field-wrap="' + ilKey2 + '"]');
+      var addBtn2 = wrap2 ? wrap2.querySelector('[data-inline-add-list="' + ilKey2 + '"]') : null;
+      if(addBtn2) addBtn2.click();
+      return;
+    }
+    if(e.key === 'Enter' && e.target.id === 'new-income-type-input'){
+      e.preventDefault();
+      var addIncTypeBtn = document.getElementById('btn-add-income-type');
+      if(addIncTypeBtn) addIncTypeBtn.click();
       return;
     }
     // 讓彈窗表單裡按 Enter 也能直接送出（因為儲存按鈕已改為 type=button，不會自動接手 Enter 鍵）
@@ -2175,6 +2372,7 @@ window.addEventListener('unhandledrejection', function(e){
   /* ============ Init ============ */
   function init(){
     document.getElementById('global-month-picker').value = selectedMonth;
+    updateAppTitle();
     showPage('dashboard');
   }
   if(document.readyState === 'loading'){
