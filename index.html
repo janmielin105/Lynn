@@ -7,17 +7,18 @@
 <link rel="icon" href="data:,">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --brand:#5B4636; --brand-dark:#3E3226; --brand-light:#C9AF92;
-  --pink:#A6503A; --soft-pink:#D9B79F; --light-pink:#F1E3D5;
-  --blue:#8B7863; --soft-blue:#C9B8A2; --light-blue:#F1EBE1;
-  --sage:#6E7C4C; --light-sage:#E8ECDC;
-  --cream:#F7F1E8; --bg:#FAF6F0; --dark:#332B22; --medium:#6B5D4D; --gray:#9C8E7C;
+  --brand:#6B7A4C; --brand-dark:#4A5636; --brand-light:#E7E9DC;
+  --pink:#B98572; --soft-pink:#E3CFC3; --light-pink:#F3E9E3;
+  --blue:#9C948A; --soft-blue:#D8D2C7; --light-blue:#F1EEE8;
+  --sage:#7C8F5A; --light-sage:#EEF1E4;
+  --cream:#FAF9F5; --bg:#F7F6F1; --dark:#2E2B26; --medium:#6E6A61; --gray:#A39D92;
+  --font-display:'Noto Serif TC', 'Noto Sans TC', serif;
   --radius:16px; --radius-sm:10px;
-  --shadow:0 2px 10px rgba(51,43,34,0.08);
-  --shadow-md:0 6px 20px rgba(51,43,34,0.12);
+  --shadow:0 2px 10px rgba(46,43,38,0.07);
+  --shadow-md:0 6px 20px rgba(46,43,38,0.11);
 }
 
 *{box-sizing:border-box;}
@@ -40,26 +41,28 @@ a{ color:inherit; }
 /* ---------- Top bar ---------- */
 .topbar{
   position:sticky; top:0; z-index:20;
-  background:var(--brand-dark);
-  border-bottom:1px solid var(--brand);
-  padding:14px 20px;
+  background:var(--cream);
+  border-bottom:1px solid var(--soft-blue);
+  padding:16px 20px;
   display:flex; align-items:center; justify-content:space-between;
   flex-wrap:wrap; gap:10px;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='60' viewBox='0 0 120 60'%3E%3Cg fill='none' stroke='%236B7A4C' stroke-width='1.4' stroke-linecap='round' opacity='0.35'%3E%3Cpath d='M118 6C100 2 84 10 70 26'/%3E%3Ccircle cx='96' cy='9' r='3'/%3E%3Ccircle cx='83' cy='15' r='2.4'/%3E%3Ccircle cx='72' cy='23' r='2'/%3E%3C/g%3E%3C/svg%3E");
+  background-repeat:no-repeat; background-position:right 6px top 2px;
 }
 .topbar-title{
-  font-weight:900; font-size:19px; letter-spacing:.3px; color:#fff;
+  font-family:var(--font-display); font-weight:700; font-size:20px; letter-spacing:.5px; color:var(--brand-dark);
   display:flex; align-items:baseline; gap:8px;
 }
-.topbar-title .dot{ width:9px; height:9px; border-radius:50%; background:var(--brand-light); display:inline-block; }
+.topbar-title .dot{ width:9px; height:9px; border-radius:50%; background:var(--brand); display:inline-block; }
 .topbar-month{
-  display:flex; align-items:center; gap:6px; font-size:13px; color:var(--brand-light); flex-wrap:wrap;
+  display:flex; align-items:center; gap:6px; font-size:13px; color:var(--medium); flex-wrap:wrap;
 }
 .topbar-month input[type=month]{
   border:1px solid var(--soft-blue); background:#fff; border-radius:8px;
   padding:6px 8px; font-size:16px; color:var(--dark);
 }
 .btn-link{
-  background:none; border:none; color:var(--brand-light); font-weight:700; font-size:13px;
+  background:none; border:none; color:var(--brand); font-weight:700; font-size:13px;
   cursor:pointer; text-decoration:underline; padding:4px 2px;
 }
 
@@ -70,22 +73,21 @@ a{ color:inherit; }
   .sidenav{
     display:flex; flex-direction:column; gap:4px;
     width:200px; flex-shrink:0; padding:24px 12px; position:sticky; top:65px;
-    align-self:stretch; background:var(--brand-dark);
   }
 }
 .nav-btn{
   display:block; width:100%; text-align:left; background:none; border:none;
-  padding:11px 14px; border-radius:10px; font-size:15px; font-weight:500; color:var(--brand-light);
+  padding:11px 14px; border-radius:10px; font-size:15px; font-weight:500; color:var(--medium);
   cursor:pointer; transition:background .15s ease, color .15s ease;
 }
-.nav-btn:hover{ background:var(--brand); color:#fff; }
-.nav-btn.active{ background:var(--brand-light); color:var(--brand-dark); font-weight:700; }
+.nav-btn:hover{ background:var(--light-sage); }
+.nav-btn.active{ background:var(--brand); color:#fff; font-weight:700; }
 
 main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 auto; width:100%; }
 
 .bottomnav{
   position:fixed; bottom:0; left:0; right:0; z-index:20;
-  display:flex; background:var(--brand-dark); border-top:1px solid var(--brand);
+  display:flex; background:var(--cream); border-top:1px solid var(--soft-blue);
   padding:6px 4px calc(6px + env(safe-area-inset-bottom));
 }
 @media (min-width:900px){ .bottomnav{ display:none; } }
@@ -103,7 +105,7 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
   display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;
   margin-bottom:18px;
 }
-.page-header h1{ font-size:20px; margin:0; font-weight:900; }
+.page-header h1{ font-family:var(--font-display); font-size:22px; margin:0; font-weight:700; letter-spacing:.3px; color:var(--brand-dark); }
 .page-sub{ color:var(--gray); font-size:13px; margin-top:2px; }
 
 /* ---------- Buttons ---------- */
@@ -145,7 +147,7 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
 .stat-diff.down{ color:var(--pink); }
 .stat-diff.muted{ color:var(--gray); font-weight:500; }
 
-.section-title{ font-size:15px; font-weight:700; margin:22px 0 10px; color:var(--dark); }
+.section-title{ font-family:var(--font-display); font-size:16px; font-weight:700; margin:22px 0 10px; color:var(--brand-dark); }
 .alert-list{ display:flex; flex-direction:column; gap:8px; }
 .alert-row{
   background:#fff; border:1px solid var(--light-pink); border-radius:var(--radius-sm);
@@ -346,7 +348,7 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
 .modal-head{
   display:flex; justify-content:space-between; align-items:center; padding:18px 20px 8px;
 }
-.modal-head h2{ font-size:17px; margin:0; font-weight:900; }
+.modal-head h2{ font-family:var(--font-display); font-size:18px; margin:0; font-weight:700; color:var(--brand-dark); }
 .modal-close{ background:none; border:none; font-size:20px; color:var(--gray); cursor:pointer; line-height:1; }
 .modal-body{ padding:8px 20px 22px; }
 .modal-body .form-hint{
