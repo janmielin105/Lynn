@@ -10,13 +10,14 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
 <style>
 :root{
-  --pink:#C9938A; --soft-pink:#E8C4BC; --light-pink:#F5E6E3;
-  --blue:#7A9BAD; --soft-blue:#B8CFDA; --light-blue:#E3EDF3;
-  --sage:#9AAE9B; --light-sage:#E8F0E8;
-  --cream:#FAF3EE; --bg:#FAFAF8; --dark:#37352F; --medium:#5A5248; --gray:#9B9A97;
+  --brand:#5B4636; --brand-dark:#3E3226; --brand-light:#C9AF92;
+  --pink:#A6503A; --soft-pink:#D9B79F; --light-pink:#F1E3D5;
+  --blue:#8B7863; --soft-blue:#C9B8A2; --light-blue:#F1EBE1;
+  --sage:#6E7C4C; --light-sage:#E8ECDC;
+  --cream:#F7F1E8; --bg:#FAF6F0; --dark:#332B22; --medium:#6B5D4D; --gray:#9C8E7C;
   --radius:16px; --radius-sm:10px;
-  --shadow:0 2px 10px rgba(55,53,47,0.07);
-  --shadow-md:0 6px 20px rgba(55,53,47,0.10);
+  --shadow:0 2px 10px rgba(51,43,34,0.08);
+  --shadow-md:0 6px 20px rgba(51,43,34,0.12);
 }
 
 *{box-sizing:border-box;}
@@ -39,26 +40,26 @@ a{ color:inherit; }
 /* ---------- Top bar ---------- */
 .topbar{
   position:sticky; top:0; z-index:20;
-  background:var(--cream);
-  border-bottom:1px solid var(--soft-pink);
+  background:var(--brand-dark);
+  border-bottom:1px solid var(--brand);
   padding:14px 20px;
   display:flex; align-items:center; justify-content:space-between;
   flex-wrap:wrap; gap:10px;
 }
 .topbar-title{
-  font-weight:900; font-size:19px; letter-spacing:.3px; color:var(--dark);
+  font-weight:900; font-size:19px; letter-spacing:.3px; color:#fff;
   display:flex; align-items:baseline; gap:8px;
 }
-.topbar-title .dot{ width:9px; height:9px; border-radius:50%; background:var(--pink); display:inline-block; }
+.topbar-title .dot{ width:9px; height:9px; border-radius:50%; background:var(--brand-light); display:inline-block; }
 .topbar-month{
-  display:flex; align-items:center; gap:6px; font-size:13px; color:var(--medium); flex-wrap:wrap;
+  display:flex; align-items:center; gap:6px; font-size:13px; color:var(--brand-light); flex-wrap:wrap;
 }
 .topbar-month input[type=month]{
   border:1px solid var(--soft-blue); background:#fff; border-radius:8px;
   padding:6px 8px; font-size:16px; color:var(--dark);
 }
 .btn-link{
-  background:none; border:none; color:var(--blue); font-weight:700; font-size:13px;
+  background:none; border:none; color:var(--brand-light); font-weight:700; font-size:13px;
   cursor:pointer; text-decoration:underline; padding:4px 2px;
 }
 
@@ -69,21 +70,22 @@ a{ color:inherit; }
   .sidenav{
     display:flex; flex-direction:column; gap:4px;
     width:200px; flex-shrink:0; padding:24px 12px; position:sticky; top:65px;
+    align-self:stretch; background:var(--brand-dark);
   }
 }
 .nav-btn{
   display:block; width:100%; text-align:left; background:none; border:none;
-  padding:11px 14px; border-radius:10px; font-size:15px; font-weight:500; color:var(--medium);
+  padding:11px 14px; border-radius:10px; font-size:15px; font-weight:500; color:var(--brand-light);
   cursor:pointer; transition:background .15s ease, color .15s ease;
 }
-.nav-btn:hover{ background:var(--light-pink); }
-.nav-btn.active{ background:var(--soft-pink); color:var(--dark); font-weight:700; }
+.nav-btn:hover{ background:var(--brand); color:#fff; }
+.nav-btn.active{ background:var(--brand-light); color:var(--brand-dark); font-weight:700; }
 
 main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 auto; width:100%; }
 
 .bottomnav{
   position:fixed; bottom:0; left:0; right:0; z-index:20;
-  display:flex; background:var(--cream); border-top:1px solid var(--soft-pink);
+  display:flex; background:var(--brand-dark); border-top:1px solid var(--brand);
   padding:6px 4px calc(6px + env(safe-area-inset-bottom));
 }
 @media (min-width:900px){ .bottomnav{ display:none; } }
@@ -110,7 +112,7 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
   cursor:pointer; transition:opacity .15s ease, transform .1s ease;
 }
 .btn:active{ transform:scale(.97); }
-.btn.primary{ background:var(--pink); color:#fff; }
+.btn.primary{ background:var(--brand); color:#fff; }
 .btn.primary:hover{ opacity:.9; }
 .btn.secondary{ background:var(--light-blue); color:var(--dark); }
 .btn.secondary:hover{ opacity:.85; }
