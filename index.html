@@ -76,10 +76,11 @@ a{ color:inherit; }
   }
 }
 .nav-btn{
-  display:block; width:100%; text-align:left; background:none; border:none;
+  display:flex; align-items:center; gap:8px; width:100%; text-align:left; background:none; border:none;
   padding:11px 14px; border-radius:10px; font-size:15px; font-weight:500; color:var(--medium);
   cursor:pointer; transition:background .15s ease, color .15s ease;
 }
+.nav-icon{ width:17px; height:17px; flex-shrink:0; stroke:currentColor; fill:none; stroke-width:1.6; stroke-linecap:round; stroke-linejoin:round; }
 .nav-btn:hover{ background:var(--light-sage); }
 .nav-btn.active{ background:var(--brand); color:#fff; font-weight:700; }
 
@@ -92,8 +93,9 @@ main{ flex:1; min-width:0; padding:22px 18px 40px; max-width:1100px; margin:0 au
 }
 @media (min-width:900px){ .bottomnav{ display:none; } }
 .bottomnav .nav-btn{
-  flex:1; text-align:center; font-size:12px; padding:8px 2px; border-radius:10px;
+  flex:1; flex-direction:column; justify-content:center; gap:3px; text-align:center; font-size:11px; padding:7px 2px; border-radius:10px;
 }
+.bottomnav .nav-icon{ width:19px; height:19px; }
 
 /* ---------- Pages ---------- */
 .page{ display:none; }
@@ -431,12 +433,12 @@ window.addEventListener('unhandledrejection', function(e){
 
 <div class="layout">
   <nav class="sidenav">
-    <button class="nav-btn" data-nav="dashboard">首頁</button>
-    <button class="nav-btn" data-nav="assets">總資產表</button>
-    <button class="nav-btn" data-nav="income">總收入表</button>
-    <button class="nav-btn" data-nav="fixed">固定支出</button>
-    <button class="nav-btn" data-nav="variable">變動支出</button>
-    <button class="nav-btn" data-nav="backup">設定</button>
+    <button class="nav-btn" data-nav="dashboard"><svg class="nav-icon" viewBox="0 0 20 20"><path d="M3 9.5 10 4l7 5.5"/><path d="M5 8.5V16h10V8.5"/></svg>首頁</button>
+    <button class="nav-btn" data-nav="assets"><svg class="nav-icon" viewBox="0 0 20 20"><rect x="2.5" y="5" width="15" height="11" rx="2"/><path d="M2.5 8.5h15"/><circle cx="14" cy="12" r="1.2"/></svg>總資產表</button>
+    <button class="nav-btn" data-nav="income"><svg class="nav-icon" viewBox="0 0 20 20"><rect x="2" y="5.5" width="16" height="9" rx="1.5"/><circle cx="10" cy="10" r="2"/></svg>總收入表</button>
+    <button class="nav-btn" data-nav="fixed"><svg class="nav-icon" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="1.5"/><path d="M3 8h14M7 2.5v3M13 2.5v3M6.5 11h7M6.5 14h4"/></svg>固定支出</button>
+    <button class="nav-btn" data-nav="variable"><svg class="nav-icon" viewBox="0 0 20 20"><path d="M3 8h14l-1.3 8H4.3L3 8Z"/><path d="M6 8 8 3M14 8l-2-5M7 11v3M13 11v3"/></svg>變動支出</button>
+    <button class="nav-btn" data-nav="backup"><svg class="nav-icon" viewBox="0 0 20 20"><path d="M3 6h9M15 6h2M3 14h2M8 14h9"/><circle cx="12" cy="6" r="2"/><circle cx="5" cy="14" r="2"/></svg>設定</button>
   </nav>
 
   <main>
@@ -604,12 +606,12 @@ window.addEventListener('unhandledrejection', function(e){
 </div>
 
 <nav class="bottomnav">
-  <button class="nav-btn" data-nav="dashboard">首頁</button>
-  <button class="nav-btn" data-nav="assets">資產</button>
-  <button class="nav-btn" data-nav="income">收入</button>
-  <button class="nav-btn" data-nav="fixed">固定</button>
-  <button class="nav-btn" data-nav="variable">變動</button>
-  <button class="nav-btn" data-nav="backup">設定</button>
+  <button class="nav-btn" data-nav="dashboard"><svg class="nav-icon" viewBox="0 0 20 20"><path d="M3 9.5 10 4l7 5.5"/><path d="M5 8.5V16h10V8.5"/></svg>首頁</button>
+  <button class="nav-btn" data-nav="assets"><svg class="nav-icon" viewBox="0 0 20 20"><rect x="2.5" y="5" width="15" height="11" rx="2"/><path d="M2.5 8.5h15"/><circle cx="14" cy="12" r="1.2"/></svg>資產</button>
+  <button class="nav-btn" data-nav="income"><svg class="nav-icon" viewBox="0 0 20 20"><rect x="2" y="5.5" width="16" height="9" rx="1.5"/><circle cx="10" cy="10" r="2"/></svg>收入</button>
+  <button class="nav-btn" data-nav="fixed"><svg class="nav-icon" viewBox="0 0 20 20"><rect x="3" y="4" width="14" height="13" rx="1.5"/><path d="M3 8h14M7 2.5v3M13 2.5v3M6.5 11h7M6.5 14h4"/></svg>固定</button>
+  <button class="nav-btn" data-nav="variable"><svg class="nav-icon" viewBox="0 0 20 20"><path d="M3 8h14l-1.3 8H4.3L3 8Z"/><path d="M6 8 8 3M14 8l-2-5M7 11v3M13 11v3"/></svg>變動</button>
+  <button class="nav-btn" data-nav="backup"><svg class="nav-icon" viewBox="0 0 20 20"><path d="M3 6h9M15 6h2M3 14h2M8 14h9"/><circle cx="12" cy="6" r="2"/><circle cx="5" cy="14" r="2"/></svg>設定</button>
 </nav>
 
 <div id="modal-overlay">
