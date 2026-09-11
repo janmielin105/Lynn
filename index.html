@@ -107,8 +107,6 @@ h2{font-size:clamp(34px,4vw,48px);line-height:1.35;margin:0 0 16px;letter-spacin
 .purchase-list li:before{content:"";position:absolute;left:2px;top:.72em;width:7px;height:7px;border:1px solid var(--ink);border-radius:50%;transform:translateY(-50%)}
 .purchase-btn{position:relative;min-width:260px;font-size:15px;font-weight:600}
 .purchase-note{font-size:11px;color:#9b998f;margin-top:12px;letter-spacing:.03em;position:relative}
-.purchase-pending{display:none;font-size:12.5px;color:var(--ink-dark);background:rgba(102,107,37,.1);border:1px solid rgba(102,107,37,.25);border-radius:2px;padding:10px 14px;margin-top:14px;position:relative}
-.purchase-pending.show{display:block}
 .faq{max-width:760px;margin:38px auto 0}
 details{background:rgba(255,255,252,.8);border:1px solid var(--line);border-radius:2px;padding:17px 20px;margin:10px 0}
 summary{cursor:pointer;font-weight:500;color:#66665a;letter-spacing:.03em}
@@ -147,7 +145,7 @@ footer{padding:30px 0;border-top:1px solid var(--line);color:#99978f;font-size:1
       <h1>不是不會存錢，<br>只是你還沒看懂錢花去哪裡。</h1>
       <p class="lead">把家庭的資產、收入、固定支出與日常花費，集中在一個地方。每個月打開一次，就能快速掌握家裡的財務狀況。</p>
       <div class="cta-row">
-        <a class="btn btn-primary" href="app.html">免費開始使用 →</a>
+        <a class="btn btn-primary" href="app.html" target="_blank">立即購買 →</a>
         <a class="btn btn-light" href="#features">先看看功能</a>
       </div>
       <div class="note">免下載 App・直接開啟就能使用・資料可自行備份</div>
@@ -250,9 +248,8 @@ footer{padding:30px 0;border-top:1px solid var(--line);color:#99978f;font-size:1
           <li>資料可自行備份與還原</li>
           <li><strong>一次買斷，不需每月訂閱</strong></li>
         </ul>
-        <button type="button" class="btn btn-primary purchase-btn" id="btn-purchase-pending">立即搶購早鳥價 NT$399 →</button>
-        <div class="purchase-pending" id="purchase-pending-msg">付款功能準備中，還沒有開放購買。想先體驗的話可以點上面「免費開始使用」試用完整功能。</div>
-        <div class="purchase-note">付款連結準備好後會直接更新在這裡</div>
+        <a class="btn btn-primary purchase-btn" href="#purchase-link">立即搶購早鳥價 NT$399 →</a>
+        <div class="purchase-note">付款連結可直接接上你的金流／付款頁面</div>
       </div>
     </div>
   </div>
@@ -265,7 +262,7 @@ footer{padding:30px 0;border-top:1px solid var(--line);color:#99978f;font-size:1
       <h2>先把錢的去向搞懂，<br>再談怎麼存更多。</h2>
       <p class="sub">打開「家庭理財小幫手」，從這個月開始，給自己一份看得懂的家庭財務紀錄。</p>
       <div class="cta-row" style="justify-content:center">
-        <a class="btn btn-primary" href="app.html">立即開啟家庭理財小幫手 →</a>
+        <a class="btn btn-primary" href="app.html" target="_blank">立即開啟家庭理財小幫手 →</a>
       </div>
     </div>
   </div>
@@ -288,7 +285,7 @@ footer{padding:30px 0;border-top:1px solid var(--line);color:#99978f;font-size:1
     <h2>從今天開始，<br>讓每一筆錢都有去處。</h2>
     <p class="lead" style="margin:0 auto">不用一次改變所有習慣，先從記錄這個月開始。</p>
     <div class="cta-row" style="justify-content:center">
-      <a class="btn btn-primary" href="app.html">免費開始使用 →</a>
+      <a class="btn btn-primary" href="app.html" target="_blank">立即購買 →</a>
     </div>
   </div>
 </section>
@@ -297,11 +294,5 @@ footer{padding:30px 0;border-top:1px solid var(--line);color:#99978f;font-size:1
 <footer>
   <div class="container">© 2026 家庭理財小幫手｜讓家庭財務，簡單一點。</div>
 </footer>
-
-<script>
-document.getElementById('btn-purchase-pending').addEventListener('click', function(){
-  document.getElementById('purchase-pending-msg').classList.add('show');
-});
-</script>
 </body>
 </html>
