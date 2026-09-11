@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>開始使用｜家庭理財小幫手</title>
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=Noto+Serif+TC:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brand:#6B7A4C; --brand-dark:#4A5636; --brand-light:#E7E9DC;
+  --pink:#B98572; --soft-pink:#E3CFC3; --light-pink:#F3E9E3;
+  --blue:#9C948A; --soft-blue:#D8D2C7; --light-blue:#F1EEE8;
+  --cream:#FAF9F5; --bg:#F7F6F1; --dark:#2E2B26; --medium:#6E6A61; --gray:#A39D92;
+  --font-display:'Noto Serif TC', 'Noto Sans TC', serif;
+  --radius:16px; --shadow:0 2px 10px rgba(46,43,38,.07); --shadow-md:0 10px 28px rgba(46,43,38,.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  background:var(--bg); color:var(--dark); font-family:'Noto Sans TC', sans-serif;
+  -webkit-font-smoothing:antialiased; min-height:100vh;
+  display:flex; align-items:center; justify-content:center; padding:24px 16px;
+}
+.wrap{ width:100%; max-width:480px; }
+.dots{ display:flex; justify-content:center; gap:8px; margin-bottom:22px; }
+.dot{ width:8px; height:8px; border-radius:50%; background:var(--soft-blue); transition:background .2s ease, transform .2s ease; }
+.dot.active{ background:var(--brand); transform:scale(1.3); }
+.dot.done{ background:var(--brand-light); }
+.card{
+  background:#fff; border-radius:var(--radius); box-shadow:var(--shadow-md);
+  padding:32px 26px; border:1px solid rgba(154,148,122,.18);
+}
+.step{ display:none; }
+.step.active{ display:block; animation:fadein .18s ease; }
+@keyframes fadein{ from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:none;} }
+.eyebrow{ font-size:12px; font-weight:700; letter-spacing:.14em; color:var(--brand); text-transform:uppercase; margin-bottom:8px; }
+h1{ font-family:var(--font-display); font-size:23px; font-weight:700; margin:0 0 10px; color:var(--brand-dark); letter-spacing:.3px; }
+p.lead{ font-size:14px; color:var(--medium); line-height:1.75; margin:0 0 22px; }
+label{ display:block; font-size:13px; font-weight:700; color:var(--medium); margin-bottom:14px; }
+input, select{
+  display:block; width:100%; margin-top:6px; padding:11px 13px; border:1px solid var(--soft-blue);
+  border-radius:9px; font-size:16px; color:var(--dark); background:#fff; font-family:inherit;
+}
+.field-note{ font-size:12px; color:var(--gray); margin:6px 0 0; line-height:1.5; }
+.actions{ display:flex; justify-content:space-between; align-items:center; gap:10px; margin-top:26px; }
+.btn{ border:none; border-radius:10px; padding:11px 20px; font-size:14px; font-weight:700; cursor:pointer; transition:opacity .15s ease; }
+.btn.primary{ background:var(--brand); color:#fff; }
+.btn.primary:hover{ opacity:.9; }
+.btn.text{ background:none; color:var(--gray); padding:11px 6px; text-decoration:underline; }
+.summary-list{ list-style:none; padding:0; margin:0 0 22px; }
+.summary-list li{
+  display:flex; align-items:center; gap:10px; padding:10px 0; border-bottom:1px solid var(--light-blue);
+  font-size:14px; color:var(--dark);
+}
+.summary-list li:last-child{ border-bottom:none; }
+.summary-list .ok{ color:var(--brand); font-weight:900; }
+.toast{
+  position:fixed; left:50%; bottom:28px; transform:translateX(-50%) translateY(10px);
+  background:var(--brand-dark); color:#fff; padding:10px 18px; border-radius:30px; font-size:13px;
+  font-weight:700; opacity:0; pointer-events:none; transition:opacity .2s ease, transform .2s ease;
+}
+.toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="dots" id="dots"></div>
+  <div class="card">
+
+    <section class="step active" data-step="1">
+      <div class="eyebrow">STEP 1 / 4</div>
+      <h1>嗨，先自我介紹一下吧</h1>
+      <p class="lead">設定一個稱呼，之後打開「家庭理財小幫手」的時候，會用這個稱呼跟你打招呼。不填也可以，之後隨時能到「設定」頁面補。</p>
+      <label>你的稱呼（選填）
+        <input type="text" id="in-nickname" placeholder="例如：小美">
+      </label>
+      <div class="actions">
+        <span></span>
+        <button type="button" class="btn primary" data-next>下一步 →</button>
+      </div>
+    </section>
+
+    <section class="step" data-step="2">
+      <div class="eyebrow">STEP 2 / 4</div>
+      <h1>記下你現在有多少資產</h1>
+      <p class="lead">資產是「現在手上有多少錢」，例如現金、銀行存款、股票市值。先隨便估一個數字練習看看，之後隨時可以到「總資產表」修改或新增更多筆。</p>
+      <label>分類
+        <select id="in-asset-type">
+          <option value="現金">現金</option>
+          <option value="定存">定存</option>
+          <option value="股票">股票</option>
+        </select>
+      </label>
+      <label>金額（NT$，選填）
+        <input type="number" id="in-asset-amount" min="0" step="1" placeholder="例如：50000">
+      </label>
+      <p class="field-note">留空的話這步驟會跳過，之後可以再到「總資產表」新增。</p>
+      <div class="actions">
+        <button type="button" class="btn text" data-prev>← 上一步</button>
+        <button type="button" class="btn primary" data-next>下一步 →</button>
+      </div>
+    </section>
+
+    <section class="step" data-step="3">
+      <div class="eyebrow">STEP 3 / 4</div>
+      <h1>新增一筆固定支出試試看</h1>
+      <p class="lead">固定支出是每期金額差不多固定的款項，例如保險、房貸、電信費。填一筆你目前有在繳的，之後系統會提醒你每月要先存多少錢。</p>
+      <label>分類
+        <select id="in-fixed-tag">
+          <option value="保險">保險</option>
+          <option value="貸款">貸款</option>
+          <option value="稅金">稅金</option>
+          <option value="電信">電信</option>
+          <option value="訂閱">訂閱</option>
+        </select>
+      </label>
+      <label>款項名稱（選填）
+        <input type="text" id="in-fixed-name" placeholder="例如：車險">
+      </label>
+      <label>金額（NT$，選填）
+        <input type="number" id="in-fixed-amount" min="0" step="1" placeholder="例如：6000">
+      </label>
+      <p class="field-note">這裡先當作每月都要提醒存款；月份、繳費週期之後可以到「固定支出」頁面調整。留空會跳過這步驟。</p>
+      <div class="actions">
+        <button type="button" class="btn text" data-prev>← 上一步</button>
+        <button type="button" class="btn primary" data-next>下一步 →</button>
+      </div>
+    </section>
+
+    <section class="step" data-step="4">
+      <div class="eyebrow">STEP 4 / 4</div>
+      <h1>準備好了！</h1>
+      <p class="lead">剛剛設定的內容已經幫你存起來了，之後打開工具會直接看到：</p>
+      <ul class="summary-list" id="summary-list"></ul>
+      <p class="field-note" style="margin-bottom:22px;">之後想記帳，到首頁按「＋ 記帳」；想改稱呼、清單或匯出備份，到「設定」頁面。</p>
+      <div class="actions">
+        <button type="button" class="btn text" data-prev>← 上一步</button>
+        <a class="btn primary" href="app.html">開始使用家庭理財小幫手 →</a>
+      </div>
+    </section>
+
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+  var STORAGE_KEY = 'ffm_data_v1';
+
+  function defaultState(){
+    return {
+      assets: [], incomes: [], incomeItems: [], expenseItems: [], expenseRecords: [], variableExpenses: [],
+      profile: { nickname: '' },
+      _listsMigratedV2: true,
+      pickLists: {
+        fixedCategory: ['保險', '貸款', '稅金', '電信', '訂閱'],
+        itemName: ['遠雄', '新光', '信貸', '車貸', '燃料', '牌照', '所得', '遠傳'],
+        payee: [], paymentMethod: [],
+        variableCategory: ['交通', '娛樂', '餐飲', '家用'],
+        variableName: ['加油', '保養', '社交', '治裝', '雜支', '維修', '其他'],
+        incomeType: ['薪資', '津貼', '股息', '獎金', '其他'],
+        assetType: ['現金', '定存', '股票']
+      }
+    };
+  }
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(!raw) return defaultState();
+      var parsed = JSON.parse(raw);
+      var base = defaultState();
+      return {
+        assets: Array.isArray(parsed.assets) ? parsed.assets : base.assets,
+        incomes: Array.isArray(parsed.incomes) ? parsed.incomes : base.incomes,
+        incomeItems: Array.isArray(parsed.incomeItems) ? parsed.incomeItems : base.incomeItems,
+        expenseItems: Array.isArray(parsed.expenseItems) ? parsed.expenseItems : base.expenseItems,
+        expenseRecords: Array.isArray(parsed.expenseRecords) ? parsed.expenseRecords : base.expenseRecords,
+        variableExpenses: Array.isArray(parsed.variableExpenses) ? parsed.variableExpenses : base.variableExpenses,
+        profile: (parsed.profile && typeof parsed.profile.nickname === 'string') ? parsed.profile : base.profile,
+        _listsMigratedV2: true,
+        pickLists: (parsed.pickLists && typeof parsed.pickLists === 'object') ? Object.assign({}, base.pickLists, parsed.pickLists) : base.pickLists
+      };
+    }catch(e){ return defaultState(); }
+  }
+  function saveState(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  function uid(prefix){ return prefix + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,8); }
+  function currentMonthStr(){
+    var d = new Date();
+    return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0');
+  }
+
+  var state = loadState();
+  var currentStep = 1;
+  var totalSteps = 4;
+  var collected = { nickname: '', assetType: '', assetAmount: '', fixedTag: '', fixedName: '', fixedAmount: '' };
+
+  var dotsEl = document.getElementById('dots');
+  for(var i = 1; i <= totalSteps; i++){
+    var d = document.createElement('span');
+    d.className = 'dot';
+    d.dataset.dot = i;
+    dotsEl.appendChild(d);
+  }
+
+  function renderDots(){
+    document.querySelectorAll('.dot').forEach(function(d){
+      var n = parseInt(d.dataset.dot, 10);
+      d.classList.toggle('active', n === currentStep);
+      d.classList.toggle('done', n < currentStep);
+    });
+  }
+
+  function showStep(n){
+    document.querySelectorAll('.step').forEach(function(s){
+      s.classList.toggle('active', parseInt(s.dataset.step, 10) === n);
+    });
+    currentStep = n;
+    renderDots();
+    if(n === 4) renderSummary();
+  }
+
+  function showToast(msg){
+    var el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    setTimeout(function(){ el.classList.remove('show'); }, 1800);
+  }
+
+  function renderSummary(){
+    var items = [];
+    items.push('稱呼：' + (collected.nickname ? collected.nickname : '（之後可到設定頁補）'));
+    items.push('資產：' + (collected.assetAmount ? (collected.assetType + ' NT$ ' + Number(collected.assetAmount).toLocaleString('zh-TW')) : '（先跳過，之後可到總資產表新增）'));
+    items.push('固定支出：' + (collected.fixedAmount ? ((collected.fixedName || collected.fixedTag) + ' NT$ ' + Number(collected.fixedAmount).toLocaleString('zh-TW')) : '（先跳過，之後可到固定支出頁新增）'));
+    document.getElementById('summary-list').innerHTML = items.map(function(t){
+      return '<li><span class="ok">✓</span>' + t + '</li>';
+    }).join('');
+  }
+
+  document.querySelectorAll('[data-next]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(currentStep === 1){
+        collected.nickname = document.getElementById('in-nickname').value.trim();
+        state.profile.nickname = collected.nickname;
+        saveState();
+        if(collected.nickname) showToast('已儲存稱呼');
+      } else if(currentStep === 2){
+        collected.assetType = document.getElementById('in-asset-type').value;
+        collected.assetAmount = document.getElementById('in-asset-amount').value;
+        if(collected.assetAmount !== ''){
+          var amt = Number(collected.assetAmount) || 0;
+          var month = currentMonthStr();
+          var exists = state.assets.some(function(a){
+            return a.month === month && a.type === collected.assetType && (a.payee || '') === '';
+          });
+          if(!exists){
+            state.assets.push({ id: uid('asset'), month: month, type: collected.assetType, payee: '', amount: amt });
+            saveState();
+            showToast('已記錄第一筆資產');
+          }
+        }
+      } else if(currentStep === 3){
+        collected.fixedTag = document.getElementById('in-fixed-tag').value;
+        collected.fixedName = document.getElementById('in-fixed-name').value.trim();
+        collected.fixedAmount = document.getElementById('in-fixed-amount').value;
+        if(collected.fixedAmount !== '' && collected.fixedName){
+          state.expenseItems.push({
+            id: uid('item'), category: 'fixed', name: collected.fixedName,
+            amount: Number(collected.fixedAmount) || 0, paymentMonths: [],
+            tag: collected.fixedTag, payee: '', paymentMethod: '', note: ''
+          });
+          if(state.pickLists.itemName.indexOf(collected.fixedName) === -1){
+            state.pickLists.itemName.push(collected.fixedName);
+          }
+          saveState();
+          showToast('已記錄第一筆固定支出');
+        }
+      }
+      if(currentStep < totalSteps) showStep(currentStep + 1);
+    });
+  });
+  document.querySelectorAll('[data-prev]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      if(currentStep > 1) showStep(currentStep - 1);
+    });
+  });
+
+  showStep(1);
+})();
+</script>
+</body>
+</html>
