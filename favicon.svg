@@ -4,8 +4,8 @@
   <circle cx="250" cy="250" r="206" fill="none" stroke="#666B25" stroke-width="2.4" stroke-dasharray="2.5,9" stroke-linecap="round"/>
   <circle cx="250" cy="250" r="176" fill="#FBFAF6" stroke="#666B25" stroke-width="2"/>
 
-  <line x1="327.1" y1="285.1" x2="440.3" y2="285.1" stroke="#666B25" stroke-width="3" stroke-linecap="round"/>
-  <line x1="213.9" y1="358.5" x2="93.5" y2="358.5" stroke="#666B25" stroke-width="3" stroke-linecap="round"/>
+  <line x1="298" y1="298" x2="419.3" y2="298" stroke="#666B25" stroke-width="3" stroke-linecap="round"/>
+  <line x1="105.2" y1="349" x2="278" y2="349" stroke="#666B25" stroke-width="3" stroke-linecap="round"/>
 
   <text x="122" y="300" font-family="Georgia, 'Noto Serif TC', serif" font-size="210" font-weight="700" fill="#666B25">M</text>
   <text x="230" y="352" font-family="Georgia, 'Noto Serif TC', serif" font-size="68" font-style="italic" fill="#666B25">oney</text>
